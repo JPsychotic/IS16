@@ -76,6 +76,23 @@ namespace GameOfLife
       UI = new Userinterface();
 
       RenderForm.MouseMove += inputHandler.RegisterInput;
+      RenderForm.MouseClick += inputHandler.RegisterInput;
+      RenderForm.MouseWheel += RenderForm_MouseWheel;
+    }
+
+    private void RenderForm_MouseWheel(object sender, MouseEventArgs e)
+    {
+      var incremet = 1;
+      if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift) incremet = 10;
+      if (e.Delta < 0)
+      {
+        Config.LineThickness -= incremet;
+        if (Config.LineThickness < 1) Config.LineThickness = 1;
+      }
+      else
+      {
+        Config.LineThickness += incremet;
+      }
     }
 
     public void Update(float elapsed)
@@ -84,7 +101,6 @@ namespace GameOfLife
       UI.Update(elapsed);
     }
 
-    float totalTime = 0;
     public void Render(float elapsed)
     {
       //deviceContext.ClearDepthStencilView(renderTargetDepthStencil, DepthStencilClearFlags.Depth, 1, 0);
@@ -180,7 +196,7 @@ namespace GameOfLife
         MipLevels = 1,
         SampleDescription = new SampleDescription(Config.MSAA_SampleCount, Config.MSAA_Quality)
       };
-      
+
       ShaderInputTexDescription.SampleDescription = new SampleDescription(1, 0);
       ShaderInputTexDescription.BindFlags = BindFlags.ShaderResource;
 
@@ -192,25 +208,27 @@ namespace GameOfLife
 
     private void SetContextStates()
     {
-        InputElement[] inputElements =
-        {
+      InputElement[] inputElements =
+      {
            new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0, 0),
            new InputElement("NORMAL", 0, Format.R32G32B32A32_Float, 16, 0)
         };
 
-        layout = new InputLayout(device, ShaderProvider.GetSignatureFromShader("Shader/GoL.fx"), inputElements);
+      layout = new InputLayout(device, ShaderProvider.GetSignatureFromShader("Shader/GoL.fx"), inputElements);
 
-        deviceContext.InputAssembler.InputLayout = layout;
-        deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-        deviceContext.OutputMerger.BlendState = States.Instance.blendDisabled;
-        deviceContext.OutputMerger.DepthStencilState = States.Instance.depthEnabledStencilDisabledWriteEnabled;
-        deviceContext.Rasterizer.SetViewports(new Viewport(0, 0, RenderForm.ClientSize.Width, RenderForm.ClientSize.Height));
+      deviceContext.InputAssembler.InputLayout = layout;
+      deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+      deviceContext.OutputMerger.BlendState = States.Instance.blendDisabled;
+      deviceContext.OutputMerger.DepthStencilState = States.Instance.depthEnabledStencilDisabledWriteEnabled;
+      deviceContext.Rasterizer.SetViewports(new Viewport(0, 0, RenderForm.ClientSize.Width, RenderForm.ClientSize.Height));
     }
 
     private void OverrideEvents()
     {
       RenderForm.KeyUp += (o, e) =>
       {
+        var incremet = 1;
+        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift) incremet = 10;
         if (e.KeyCode == Keys.Escape)
         {
           Exit();
@@ -226,12 +244,12 @@ namespace GameOfLife
         }
         else if (e.KeyCode == Keys.Left)
         {
-          Config.LineThickness--;
-          if (Config.LineThickness == 0) Config.LineThickness = 1;
+          Config.LineThickness -= incremet;
+          if (Config.LineThickness < 1) Config.LineThickness = 1;
         }
         else if (e.KeyCode == Keys.Right)
         {
-          Config.LineThickness++;
+          Config.LineThickness += incremet;
         }
         else if (e.KeyCode == Keys.P)
         {

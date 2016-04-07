@@ -13,7 +13,7 @@ namespace GameOfLife.Storage
 
     #region Public properties / Config settings
 
-    public static int LineThickness { get; set; } = 2;
+    public static int LineThickness { get; set; } = 23;
     public static bool ShowFPS { get; set; }
     public static bool DisplayHelp { get; set; }
     public static int Delay = 8;
@@ -25,14 +25,39 @@ namespace GameOfLife.Storage
 
     public static bool Paused { get; internal set; } = true;
 
+    // summe an lebenden pixeln im umkreis:
+    // 8 7 6 5 4 3 2 1 0
+    // bei 3 (normale BornRule):
+    // bit an position 000001000
+    // = 1 << 3   ==   0x8
+    //
+    // DeathRule: stirb außer bei 2 oder 3
+    // bits an: 111110011
+    // == 0x1F3
+
+    public static uint BirthRule { get; internal set; } = 0x8;
+    public static uint DeathRule { get; internal set; } = 0x1F3;
+
     public static int MSAA_SampleCount = 1;
     public static int MSAA_Quality = 1;
-
 
     #endregion Public properties / Config settings
 
     static Config()
     {
+      string Rule = "125/36";
+      DeathRule = 0x1FF;
+      foreach(var c in Rule.Split('/')[0])
+      {
+        DeathRule -= (uint)(1 << int.Parse(c.ToString()));
+      }
+      BirthRule = 0;
+      foreach (var c in Rule.Split('/')[1])
+      {
+        BirthRule |= (uint)(1 << int.Parse(c.ToString()));
+      }
+
+
       // default values damit wenigstens was angezeigt wird (wenn auch nich ganz richtig):
       ShowFPS = true;
       CultureInfo customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();

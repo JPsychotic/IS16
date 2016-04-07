@@ -32,13 +32,13 @@ PS_IN VS(float4 position : POSITION)
 float4 PS(PS_IN input) : SV_Target
 {
 	float4 Color = float4(1, 1, 1, 1);
-	for (int i = 0; i < 10 && StrokeInfo[i].x > 0; i++)
+	for (uint i = 0; i < 10 && StrokeInfo[i].x > 0; i++)
 	{
 		Color = StrokeInfo2[i];
 		float2 vPos = floor(float2(input.tex.x * FrameInfo.x, input.tex.y * FrameInfo.y)); // pixel position
-		float2 A = StrokeInfo[i].xy;                                                     // position punkt A der linie
-		float2 B = StrokeInfo[i].zw;                                                     // position punkt B der linie
-		float R = FrameInfo.z / 2;                                                       // Radius
+		float2 A = StrokeInfo[i].xy;                                                       // position punkt A der linie
+		float2 B = StrokeInfo[i].zw;                                                       // position punkt B der linie
+		float R = FrameInfo.z / 2;                                                         // Radius
 
 		//if (round(vPos.x) == vPos.x && round(vPos.y) == vPos.y)
 		//	return float4(1, 0, 0, 1);

@@ -15,7 +15,6 @@ namespace GameOfLife.RenderEngine
     readonly Mesh quad;
 
     readonly Buffer CBuffer;
-    internal ShaderResourceView InputShaderRessourceView;
 
     public GameOfLifeCalculator()
     {
@@ -60,13 +59,6 @@ namespace GameOfLife.RenderEngine
 
       CBuffer = new Buffer(d, Vector4.SizeInBytes * 2, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
 
-
-      DataBox databoxPS = c.MapSubresource(CBuffer, 0, MapMode.WriteDiscard, 0);
-      databoxPS.Data.Position = 0;
-      databoxPS.Data.Write(new Vector4(1 / (float)Config.Width, 1 / (float)Config.Height, 0, 0));
-      databoxPS.Data.Write(new Vector4(0, 0, 0, 0));
-      c.UnmapSubresource(CBuffer, 0);
-
       quad = Mesh.ScreenQuad();
 
     }
@@ -76,14 +68,23 @@ namespace GameOfLife.RenderEngine
       var c = RenderFrame.Instance.deviceContext;
       if (!Config.Paused)
       {
+        DataBox databoxPS = c.MapSubresource(CBuffer, 0, MapMode.WriteDiscard, 0);
+        databoxPS.Data.Position = 0;
+        databoxPS.Data.Write(new Vector4(1 / (float)Config.Width, 1 / (float)Config.Height, 0, 0));
+        databoxPS.Data.Write(Config.BirthRule);
+        databoxPS.Data.Write(Config.DeathRule);
+        databoxPS.Data.Write<uint>(0);
+        databoxPS.Data.Write<uint>(0);
+        c.UnmapSubresource(CBuffer, 0);
+
         c.CopyResource(OffscreenRenderTarget.Resource, ScreenBufferShaderResource.Resource);
 
         c.VertexShader.Set(GoLVS);
         c.PixelShader.Set(GoLPS);
-        
+        c.PixelShader.SetSampler(SamplerStates.Instance.LinSampler, 0);
+        c.PixelShader.SetSampler(SamplerStates.Instance.PointSampler, 1);
         c.OutputMerger.SetTargets(OffscreenRenderTarget);
         c.PixelShader.SetShaderResource(ScreenBufferShaderResource, 0);
-        c.PixelShader.SetShaderResource(InputShaderRessourceView, 1);
         c.PixelShader.SetConstantBuffer(CBuffer, 2);
 
         quad.Render();
