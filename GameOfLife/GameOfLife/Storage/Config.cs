@@ -45,6 +45,7 @@ namespace GameOfLife.Storage
 
     static Config()
     {
+      string Rule = "23/3";
       DeathRule = 0x1FF;
       foreach (var c in Rule.Split('/')[0])
       {
