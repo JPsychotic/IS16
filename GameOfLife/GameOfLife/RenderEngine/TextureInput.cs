@@ -5,6 +5,7 @@ using SlimDX.Direct3D11;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Buffer = SlimDX.Direct3D11.Buffer;
 
 namespace GameOfLife
 {
@@ -27,6 +28,11 @@ namespace GameOfLife
       strokeInfoBuffer = new Buffer(d, Vector4.SizeInBytes * MaxStrokesPerFrame * 2, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
       miscInfoBuffer = new Buffer(d, Vector4.SizeInBytes, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
       quad = Mesh.ScreenQuad();
+
+      DataBox databoxPS = d.ImmediateContext.MapSubresource(miscInfoBuffer, 0, MapMode.WriteDiscard, 0);
+      databoxPS.Data.Position = 0;
+      databoxPS.Data.Write(new Vector4(Config.Width, Config.Height, 0, 0));
+      d.ImmediateContext.UnmapSubresource(miscInfoBuffer, 0);
     }
 
     public void RenderInput(Device device, DeviceContext context, RenderTargetView renderTarget)
@@ -36,24 +42,21 @@ namespace GameOfLife
       context.VertexShader.Set(inputVS);
       context.PixelShader.Set(inputPS);
 
-      DataBox databoxPS = context.MapSubresource(miscInfoBuffer, 0, MapMode.WriteDiscard, 0);
-      databoxPS.Data.Position = 0;
-      databoxPS.Data.Write(new Vector4(Config.Width, Config.Height, Config.LineThickness, 0));
-      context.UnmapSubresource(miscInfoBuffer, 0);
-
       DataBox databoxPS2 = context.MapSubresource(strokeInfoBuffer, 0, MapMode.WriteDiscard, 0);
       databoxPS2.Data.Position = 0;
       List<Vector4> Colors = new List<Vector4>();
       for (int i = 0; i < MaxStrokesPerFrame; i++)
       {
-        var vec4 = new Vector4(-1,-1,-1,-1);
+        var vec4 = new Vector4(-1, -1, -1, -1);
         Colors.Add(SelectedColor.ToVector4());
         if (LinesTodo.Count > 0)
         {
           var line = LinesTodo.Dequeue();
           vec4 = new Vector4(line.oldLocation.X, line.oldLocation.Y, line.newLocation.X, line.newLocation.Y);
-          if(line.DeleteMode)
-            Colors[i] = DeleteColor.ToVector4();
+          if (line.DeleteMode) { Colors[i] = DeleteColor.ToVector4(); }
+          var col = Colors[i];
+          col.W = line.Width;
+          Colors[i] = col;
         }
         databoxPS2.Data.Write(vec4);
       }
@@ -71,13 +74,21 @@ namespace GameOfLife
     {
       if (a.Button.HasFlag(MouseButtons.Left))
       {
-        LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, false));
+        LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, false, Config.LineThickness));
       }
       else if (a.Button.HasFlag(MouseButtons.Right))
       {
-        LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, true));
+        LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, true, Config.LineThickness));
       }
       oldMousePos = a.Location;
+    }
+
+    internal void ClearWorld()
+    {
+      LinesTodo.Enqueue(new StrokeInfo(new Point(0, 0), new Point(Config.Width, 0), true, Config.Height));
+      LinesTodo.Enqueue(new StrokeInfo(new Point(Config.Width, 0), new Point(Config.Width, Config.Height), true, Config.Width));
+      LinesTodo.Enqueue(new StrokeInfo(new Point(Config.Width, Config.Height), new Point(0, Config.Height), true, Config.Width));
+      LinesTodo.Enqueue(new StrokeInfo(new Point(0, Config.Height), new Point(0, 0), true, Config.Height));
     }
   }
 
@@ -85,8 +96,10 @@ namespace GameOfLife
   {
     public Point oldLocation, newLocation;
     public bool DeleteMode;
-    public StrokeInfo(Point loc, Point delta, bool delete)
+    public int Width;
+    public StrokeInfo(Point loc, Point delta, bool delete, int width)
     {
+      Width = width;
       DeleteMode = delete;
       oldLocation = loc;
       newLocation = delta;

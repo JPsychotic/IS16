@@ -39,13 +39,14 @@ float4 PS(PS_IN input) : SV_Target
 	// EMD
 	// FGH
 
-	float pixelab = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x / 2, -FrameInfo.y)).x * 2;
-	float pixelcd = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y / 2)).x * 2;
-	float pixelef = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y / 2)).x * 2;
-	float pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y)).x * 2;
+	float pixelab = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x / 2, -FrameInfo.y)).x;
+	float pixelcd = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y / 2)).x;
+	float pixelef = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y / 2)).x;
+	float pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y)).x;
 
 	float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
 	float sum = pixelab + pixelcd + pixelef + pixelgh;
+	sum *= 2;
 
 	uint index = round(sum);
 	if ((asuint(Rules.x) >> index) & 1 > 0) return alive;

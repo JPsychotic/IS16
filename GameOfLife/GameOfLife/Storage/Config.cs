@@ -27,7 +27,7 @@ namespace GameOfLife.Storage
 
     // summe an lebenden pixeln im umkreis:
     // 8 7 6 5 4 3 2 1 0
-    // bei 3 (normale BornRule):
+    // bei 3 (normale BirthRule):
     // bit an position 000001000
     // = 1 << 3   ==   0x8
     //
@@ -45,9 +45,8 @@ namespace GameOfLife.Storage
 
     static Config()
     {
-      string Rule = "125/36";
       DeathRule = 0x1FF;
-      foreach(var c in Rule.Split('/')[0])
+      foreach (var c in Rule.Split('/')[0])
       {
         DeathRule -= (uint)(1 << int.Parse(c.ToString()));
       }
@@ -57,8 +56,6 @@ namespace GameOfLife.Storage
         BirthRule |= (uint)(1 << int.Parse(c.ToString()));
       }
 
-
-      // default values damit wenigstens was angezeigt wird (wenn auch nich ganz richtig):
       ShowFPS = true;
       CultureInfo customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
       customCulture.NumberFormat.NumberDecimalSeparator = ".";

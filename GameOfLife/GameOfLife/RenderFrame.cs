@@ -267,6 +267,10 @@ namespace GameOfLife
         {
           Config.Vsync = Config.Vsync == 0 ? 1 : 0;
         }
+        else if (e.KeyCode == Keys.C)
+        {
+          inputHandler.ClearWorld();
+        }
       };
     }
 
