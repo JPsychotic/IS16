@@ -68,7 +68,7 @@ namespace GameOfLife.UI
       c.VertexShader.Set(vs);
       c.OutputMerger.SetTargets(target);
       c.InputAssembler.InputLayout = layoutSprite;
-      // c.OutputMerger.BlendState = States.Instance.blendEnabledAlphaBlending;
+      c.OutputMerger.BlendState = States.Instance.blendEnabledAlphaBlending;
       c.PixelShader.SetSampler(SamplerStates.Instance.PointSampler, 1);
 
       while (spriteQueue.Count > 0)

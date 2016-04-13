@@ -76,6 +76,7 @@ namespace GameOfLife
       UI = new Userinterface();
 
       RenderForm.MouseMove += inputHandler.RegisterInput;
+      //TODO: Jerry Event UI, mach ne funktion die erst den UI handler aufruft und nen rückgabewert hat ob es abgearbeitet wurde
       RenderForm.MouseClick += inputHandler.RegisterInput;
       RenderForm.MouseWheel += RenderForm_MouseWheel;
     }
