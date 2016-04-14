@@ -13,7 +13,7 @@ namespace GameOfLife.Storage
 
     #region Public properties / Config settings
 
-    public static int LineThickness { get; set; } = 23;
+    public static int LineThickness { get; set; } = 21;
     public static bool ShowFPS { get; set; }
     public static bool DisplayHelp { get; set; }
     public static int Delay = 8;
@@ -45,7 +45,12 @@ namespace GameOfLife.Storage
 
     static Config()
     {
-      string Rule = "23/3";
+      // 12345/3 a MAZE ing
+      // 12345/7 zeigt die einzelnen zeichenlinien an
+      // 23/3 normal
+      // 237/3 normal aber eher ausbreitend
+      // 238/3 normal aber mit schweif (leicht anderes verhalten)
+      string Rule = "238/3";
       DeathRule = 0x1FF;
       foreach (var c in Rule.Split('/')[0])
       {

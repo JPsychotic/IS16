@@ -35,6 +35,6 @@ float4 PS(PS_IN input) : SV_Target
 	//return input.col;
 	float mask = FontTexture.Sample(PointSampler, input.tex).a;
 	clip(mask - 0.5f);
-	float3 color = input.col * mask;
+	float3 color = input.col.rgb * mask;
 	return float4(color, 1);
 }

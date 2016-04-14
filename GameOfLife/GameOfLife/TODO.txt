@@ -1,0 +1,13 @@
+﻿Sidebar
+objekte zum platzieren auswählen
+welten einstellen
+clear, pause, etc
+
+Multitouch
+mehrere leute können gleichzeitig freihand malen und objekte verschieben/platzieren.
+
+floating elements zum platzieren:
+dazu müssen die UI klassen überarbeitet werden damit die vertex positionen nur noch relativ sind und die koordinaten wo objekte liegen
+über nen cbuffer an den shader gegeben werden. shader muss dafür auch leicht angepasst werden.
+
+farben?! was wolln wir da eig?

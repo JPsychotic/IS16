@@ -99,6 +99,8 @@ namespace GameOfLife.UI
       textQueue.Clear();
       ps.Dispose();
       vs.Dispose();
+      layoutFont.Dispose();
+      layoutSprite.Dispose();
     }
   }
 }

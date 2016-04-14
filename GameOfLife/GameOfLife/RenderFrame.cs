@@ -110,8 +110,7 @@ namespace GameOfLife
       deviceContext.InputAssembler.InputLayout = layout;
 
       inputHandler.RenderInput(device, deviceContext, gol.OffscreenRenderTarget);
-
-      deviceContext.InputAssembler.InputLayout = layout;
+      
       gol.Draw(MainRenderTarget);
 
       sb.Begin(MainRenderTarget);
@@ -283,6 +282,7 @@ namespace GameOfLife
       SzeneShaderRessource?.Dispose();
       gol?.Dispose();
       layout?.Dispose();
+      inputHandler?.Dispose();
       UI?.Dispose();
       DepthBuffer?.Dispose();
       SamplerStates.Instance.Dispose();

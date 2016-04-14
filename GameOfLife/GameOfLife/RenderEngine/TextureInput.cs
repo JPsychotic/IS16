@@ -90,6 +90,16 @@ namespace GameOfLife
       LinesTodo.Enqueue(new StrokeInfo(new Point(Config.Width, Config.Height), new Point(0, Config.Height), true, Config.Width));
       LinesTodo.Enqueue(new StrokeInfo(new Point(0, Config.Height), new Point(0, 0), true, Config.Height));
     }
+
+    public void Dispose()
+    {
+      inputPS.Dispose();
+      inputVS.Dispose();
+      miscInfoBuffer.Dispose();
+      strokeInfoBuffer.Dispose();
+      quad.Dispose();
+      bitmap.Dispose();
+    }
   }
 
   class StrokeInfo

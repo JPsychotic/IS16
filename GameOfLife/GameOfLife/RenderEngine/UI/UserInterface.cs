@@ -32,7 +32,7 @@ namespace GameOfLife.UI
     public void Update(float elapsed)
     {
       timeElapsed += elapsed;
-      if(thick != Config.LineThickness)
+      if (thick != Config.LineThickness)
       {
         thickness.Dispose();
         thickness = new DrawableString("Thickness: " + Config.LineThickness, position + offset, Color.White);
@@ -51,7 +51,7 @@ namespace GameOfLife.UI
 
     public void Draw(SpriteBatch sb)
     {
-      sideBar.Draw(sb);
+      // sideBar.Draw(sb);
       sb.DrawString(thickness);
       sb.DrawString(fpsString);
 
@@ -63,10 +63,10 @@ namespace GameOfLife.UI
 
     internal void Dispose()
     {
-      //   cfg.Dispose();
       fpsString.Dispose();
       thickness.Dispose();
       pause.Dispose();
+      sideBar.Dispose();
     }
   }
 }
