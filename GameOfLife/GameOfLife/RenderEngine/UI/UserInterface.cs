@@ -42,7 +42,7 @@ namespace GameOfLife.UI
       }
     }
     bool minimized;
-    readonly Vector2 offset = new Vector2(0, 20);
+    readonly Vector2 offset = new Vector2(0, (int)(0.0185 * Config.Height));
     readonly Color activeTabColor = Color.FromArgb(0, 0, 0, 0);
 
     Rectangle2D sideBarBackground;
@@ -87,35 +87,35 @@ namespace GameOfLife.UI
       leftTabStrings = new List<DrawableString>();
       rightTabStrings = new List<DrawableString>();
       sideBarBackground = new Rectangle2D(new Vector2(0, 0), width, Config.Height, Color.FromArgb(200, 200, 200, 200));
-      leftTab = new Rectangle2D(new Vector2(0, 0), width / 2, 80, Color.DimGray);
-      rightTab = new Rectangle2D(new Vector2(width / 2, 0), width / 2, 80, activeTabColor);
-      minimize = new Rectangle2D(new Vector2(0, Config.Height - 100), width, 100, Color.DimGray);
+      leftTab = new Rectangle2D(new Vector2(0, 0), width / 2, (int)(0.074 * Config.Height), Color.DimGray);
+      rightTab = new Rectangle2D(new Vector2(width / 2, 0), width / 2, (int)(0.074 * Config.Height), activeTabColor);
+      minimize = new Rectangle2D(new Vector2(0, Config.Height - (int)(0.093 * Config.Height)), width, (int)(0.093 * Config.Height), Color.DimGray);
       maximize = new Rectangle2D(new Vector2(0, 0), minimizedWidth, Config.Height, Color.FromArgb(200, 200, 200, 200));
 
       leftTabString = new DrawableString("Muster", new Vector2(65, 5) + offset, Color.White);
       rightTabString = new DrawableString("Einstellungen", new Vector2(width / 2 + 25, 5) + offset, Color.White);
-      minimizeString = new DrawableString("Einklappen", new Vector2(140, Config.Height - 65), Color.White);
+      minimizeString = new DrawableString("Einklappen", new Vector2(140, Config.Height - (int)(0.06 * Config.Height)), Color.White);
       maximizeString = new DrawableString(">", new Vector2(5, Config.Height / 2), Color.White);
 
-      pauseBtn = new Rectangle2D(new Vector2(25, 130), 150, 100, Color.DimGray);
-      clearBtn = new Rectangle2D(new Vector2(width / 2 + 25, 130), 150, 100, Color.DimGray);
+      pauseBtn = new Rectangle2D(new Vector2(25, (int)(0.12 * Config.Height)), 150, (int)(0.093 * Config.Height), Color.DimGray);
+      clearBtn = new Rectangle2D(new Vector2(width / 2 + 25, (int)(0.12 * Config.Height)), 150, (int)(0.093 * Config.Height), Color.DimGray);
 
-      oneBirth = new Rectangle2D(new Vector2(70, -12) + 19 * offset, 100, 50, Color.DimGray);
-      oneDeath = new Rectangle2D(new Vector2(250, -12) + 19 * offset, 100, 50, Color.DimGray);
-      twoBirth = new Rectangle2D(new Vector2(70, -12) + 22 * offset, 100, 50, Color.DimGray);
-      twoDeath = new Rectangle2D(new Vector2(250, -12) + 22 * offset, 100, 50, Color.DimGray);
-      threeBirth = new Rectangle2D(new Vector2(70, -12) + 25 * offset, 100, 50, Color.DimGray);
-      threeDeath = new Rectangle2D(new Vector2(250, -12) + 25 * offset, 100, 50, Color.DimGray);
-      fourBirth = new Rectangle2D(new Vector2(70, -12) + 28 * offset, 100, 50, Color.DimGray);
-      fourDeath = new Rectangle2D(new Vector2(250, -12) + 28 * offset, 100, 50, Color.DimGray);
-      fiveBirth = new Rectangle2D(new Vector2(70, -12) + 31 * offset, 100, 50, Color.DimGray);
-      fiveDeath = new Rectangle2D(new Vector2(250, -12) + 31 * offset, 100, 50, Color.DimGray);
-      sixBirth = new Rectangle2D(new Vector2(70, -12) + 34 * offset, 100, 50, Color.DimGray);
-      sixDeath = new Rectangle2D(new Vector2(250, -12) + 34 * offset, 100, 50, Color.DimGray);
-      sevenBirth = new Rectangle2D(new Vector2(70, -12) + 37 * offset, 100, 50, Color.DimGray);
-      sevenDeath = new Rectangle2D(new Vector2(250, -12) + 37 * offset, 100, 50, Color.DimGray);
-      eigthBirth = new Rectangle2D(new Vector2(70, -12) + 40 * offset, 100, 50, Color.DimGray);
-      eigthDeath = new Rectangle2D(new Vector2(250, -12) + 40 * offset, 100, 50, Color.DimGray);
+      oneBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 19 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      oneDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 19 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      twoBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 22 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      twoDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 22 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      threeBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 25 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      threeDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 25 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      fourBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 28 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      fourDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 28 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      fiveBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 31 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      fiveDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 31 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      sixBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 34 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      sixDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 34 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      sevenBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 37 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      sevenDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 37 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      eigthBirth = new Rectangle2D(new Vector2(70, (int)(-0.011 * Config.Height)) + 40 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
+      eigthDeath = new Rectangle2D(new Vector2(250, (int)(-0.011 * Config.Height)) + 40 * offset, 100, (int)(0.046 * Config.Height), Color.DimGray);
 
       rightTabStrings.Add(new DrawableString("Pause", new Vector2(65, 5) + 8 * offset, Color.White));
       rightTabStrings.Add(new DrawableString("Leeren", new Vector2(260, 5) + 8 * offset, Color.White));
@@ -218,17 +218,17 @@ namespace GameOfLife.UI
 
     public void HandleMouseClick(object sender, MouseEventArgs a)
     {
-      if(a.X <= width / 2 && a.Y <= 80) // Linker Tab
+      if(a.X <= width / 2 && a.Y <= (int)(0.074 * Config.Height)) // Linker Tab
       {
         leftTab.Color = activeTabColor;
         rightTab.Color = Color.DimGray;
       }
-      else if(a.X > 200 && a.Y <= 80) // Rechter Tab
+      else if(a.X > 200 && a.Y <= (int)(0.074 * Config.Height)) // Rechter Tab
       {
         leftTab.Color = Color.DimGray;
         rightTab.Color = activeTabColor;
       }
-      else if (a.Y >= Config.Height - 100) //Einklappen
+      else if (a.Y >= Config.Height - (int)(0.093 * Config.Height)) //Einklappen
       {
         minimized = true;
       }
@@ -238,11 +238,11 @@ namespace GameOfLife.UI
       }
       else if(rightTab.Color == activeTabColor)
       { 
-        if (a.X >= 25 && a.X <= 175 && a.Y >= 130 && a.Y <= 230) // Pause
+        if (a.X >= 25 && a.X <= 175 && a.Y >= (int)(0.12 * Config.Height) && a.Y <= (int)(0.213 * Config.Height)) // Pause
         {
           Config.Paused = !Config.Paused;
         }
-        else if(a.X >= 225 && a.X <= 375 && a.Y >= 130 && a.Y <= 230) //Clear
+        else if(a.X >= 225 && a.X <= 375 && a.Y >= (int)(0.12 * Config.Height) && a.Y <= (int)(0.213 * Config.Height)) //Clear
         {
           inputHandler.ClearWorld();
         }
