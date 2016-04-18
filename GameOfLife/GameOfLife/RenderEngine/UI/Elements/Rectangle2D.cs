@@ -57,5 +57,18 @@ namespace GameOfLife.RenderEngine.UI.Elements
     {
       rect.Dispose();
     }
+
+    public Color Color
+    {
+      get
+      {
+        return rect.Color;
+      }
+      set
+      {
+        rect.Color = value;
+        rect.Recreate();
+      }
+    }
   }
 }

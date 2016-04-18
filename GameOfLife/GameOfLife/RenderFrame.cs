@@ -73,12 +73,17 @@ namespace GameOfLife
       gol = new GameOfLifeCalculator();
       QueryPerformanceFrequency(out freq);
       QueryPerformanceCounter(out tickPrev);
-      UI = new Userinterface();
+      UI = new Userinterface(inputHandler);
 
-      RenderForm.MouseMove += inputHandler.RegisterInput;
-      //TODO: Jerry Event UI, mach ne funktion die erst den UI handler aufruft und nen rückgabewert hat ob es abgearbeitet wurde
-      RenderForm.MouseClick += inputHandler.RegisterInput;
+      RenderForm.MouseMove += RenderForm_MouseClick;
+      RenderForm.MouseClick += RenderForm_MouseClick;
       RenderForm.MouseWheel += RenderForm_MouseWheel;
+    }
+
+    private void RenderForm_MouseClick(object sender, MouseEventArgs e)
+    {
+      if (!UI.OnMouseClick(sender, e))
+        inputHandler.RegisterInput(sender, e);
     }
 
     private void RenderForm_MouseWheel(object sender, MouseEventArgs e)
