@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GameOfLife.RenderEngine.UI.Elements;
+﻿using GameOfLife.RenderEngine.UI.Elements;
 using GameOfLife.Storage;
 using System.Drawing;
 using GameOfLife.UI;
@@ -27,12 +23,12 @@ namespace GameOfLife.RenderEngine.UI
 
         public void Update()
         {
-
+      
         }
 
         public void Draw(SpriteBatch sb)
         {
-            background.Draw(sb);
+            sb.Draw(background);
             sb.DrawString(title);
         }
 

@@ -1,5 +1,5 @@
 ﻿const SamplerState PointSampler : register(s1);
-const Texture2D FontTexture;
+const Texture2D FontTexture : register(b0);
 
 struct VS_IN
 {

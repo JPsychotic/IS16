@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SlimDX;
 using GameOfLife.Storage;
 using System.Drawing;

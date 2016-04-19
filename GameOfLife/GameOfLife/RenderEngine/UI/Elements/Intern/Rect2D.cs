@@ -6,7 +6,7 @@ using GameOfLife.Storage;
 
 namespace GameOfLife.UI.Elements
 {
-  class Rect2D : IDrawable2DElement
+  class Rect2D
     {
         #region AlternativeConstructors
 

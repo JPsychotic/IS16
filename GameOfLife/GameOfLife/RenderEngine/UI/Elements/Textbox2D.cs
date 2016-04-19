@@ -92,7 +92,7 @@ namespace GameOfLife.RenderEngine.UI.Elements
         public void Draw(SpriteBatch sb)
         {
             sb.DrawString(drawString);
-            rect.Draw(sb);
+            sb.Draw(rect);
         }
 
         public void Dispose()

@@ -4,6 +4,7 @@ using SlimDX.Direct3D11;
 using GameOfLife.RenderEngine;
 using System;
 using SlimDX.DXGI;
+using GameOfLife.RenderEngine.UI.Elements;
 
 namespace GameOfLife.UI
 {
@@ -45,10 +46,22 @@ namespace GameOfLife.UI
       spriteQueue.Enqueue(e);
     }
 
+    public void Draw(List<IDrawable2DElement> e)
+    {
+      if (!active) throw new InvalidOperationException("You should call Begin() before ending a batch.");
+      foreach(var s in e) spriteQueue.Enqueue(s);
+    }
+
     public void DrawString(DrawableString s)
     {
       if (!active) throw new InvalidOperationException("You should call Begin() before ending a batch.");
       textQueue.Enqueue(s);
+    }
+
+    internal void DrawString(List<DrawableString> strings)
+    {
+      if (!active) throw new InvalidOperationException("You should call Begin() before ending a batch.");
+      foreach(var s in strings) textQueue.Enqueue(s);
     }
 
     public void Begin(RenderTargetView rt)

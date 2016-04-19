@@ -111,6 +111,7 @@
     <Compile Include="RenderEngine\UI\Elements\Rectangle2D.cs" />
     <Compile Include="RenderEngine\UI\Elements\Textbox2D.cs" />
     <Compile Include="RenderEngine\UI\InterfaceStates.cs" />
+    <Compile Include="RenderEngine\UI\SideBar.cs" />
     <Compile Include="RenderEngine\UI\SpriteBatch.cs" />
     <Compile Include="RenderEngine\UI\UserInterface.cs" />
     <Compile Include="RenderEngine\Vertex.cs" />

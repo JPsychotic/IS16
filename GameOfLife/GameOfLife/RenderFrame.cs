@@ -75,7 +75,8 @@ namespace GameOfLife
       QueryPerformanceCounter(out tickPrev);
       UI = new Userinterface(inputHandler);
 
-      RenderForm.MouseMove += RenderForm_MouseClick;
+      RenderForm.MouseMove += inputHandler.RegisterInput;
+      RenderForm.MouseDoubleClick += RenderForm_MouseClick;
       RenderForm.MouseClick += RenderForm_MouseClick;
       RenderForm.MouseWheel += RenderForm_MouseWheel;
     }
