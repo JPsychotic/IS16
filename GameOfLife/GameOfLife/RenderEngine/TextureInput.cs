@@ -80,6 +80,7 @@ namespace GameOfLife
 
     internal void RegisterMouseDown(object sender, MouseEventArgs e)
     {
+      LinesTodo.Enqueue(new StrokeInfo(e.Location, e.Location, false, Config.LineThickness));
       oldMousePos = e.Location;
     }
 

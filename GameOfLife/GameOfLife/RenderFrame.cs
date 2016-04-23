@@ -98,7 +98,7 @@ namespace GameOfLife
     private void OnMouseDown(object sender, MouseEventArgs e)
     {
       if (UI.IsPointInUI(e.Location)) MouseOnSideBar = true;
-      inputHandler.RegisterMouseDown(sender, e);
+      else inputHandler.RegisterMouseDown(sender, e);
     }
 
     private void OnTouchDownHandler(object sender, TouchEventArgs e)
