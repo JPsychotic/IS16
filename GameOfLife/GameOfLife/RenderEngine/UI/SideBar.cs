@@ -132,23 +132,23 @@ namespace GameOfLife.RenderEngine.UI
       }
     }
 
+    public bool IsPointInsideSidebar(Point loc)
+    {
+      return ((loc.X <= Width && State != SideBarState.Minimized) || (loc.X <= MinimizedWidth && State == SideBarState.Minimized));
+    }
+
     public bool HandleMouseMove(Point loc)
     {
-      if ((loc.X <= Width && State != SideBarState.Minimized) || (loc.X <= MinimizedWidth && State == SideBarState.Minimized))
-      {
-        return true;
-      }
-      return false;
+      return IsPointInsideSidebar(loc);
     }
 
     public bool HandleMouseClick(Point loc)
     {
-      if ((loc.X <= Width && State != SideBarState.Minimized) || (loc.X <= MinimizedWidth && State == SideBarState.Minimized))
+      if (IsPointInsideSidebar(loc))
       {
         GotInputClick(loc, State);
         return true;
       }
-
       return false;
     }
 

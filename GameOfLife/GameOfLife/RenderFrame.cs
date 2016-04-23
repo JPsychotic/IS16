@@ -12,6 +12,9 @@ using GameOfLife.RenderEngine;
 using GameOfLife.Storage;
 using GameOfLife.UI;
 using System.Threading;
+using System.Linq;
+using GameOfLife.TouchInput;
+using System.Collections.Generic;
 
 namespace GameOfLife
 {
@@ -25,7 +28,7 @@ namespace GameOfLife
     long tickPrev, freq;
     public Device device { get; private set; }
     public DeviceContext deviceContext { get; private set; }
-    public RenderForm RenderForm { get; set; }
+    public TouchForm RenderForm { get; set; }
     public SwapChain swapChain;
     public RenderTargetView MainRenderTarget;
     public DepthStencilView renderTargetDepthStencil;
@@ -40,8 +43,9 @@ namespace GameOfLife
     Texture2DDescription ShaderInputTexDescription;
     Texture2D SzeneTexture;
     ShaderResourceView SzeneShaderRessource;
-
     SpriteBatch sb;
+
+    public List<Finger> CurrentFingerCoordinates = new List<Finger>();
 
     public static RenderFrame Instance;
 
@@ -54,12 +58,12 @@ namespace GameOfLife
       Point windowSize = new Point(Config.Width, Config.Height);
 
       Instance = this;
-      RenderForm = new RenderForm("GameOfLife")
+      RenderForm = new TouchForm("GameOfLife")
       {
         StartPosition = FormStartPosition.Manual,
         FormBorderStyle = FormBorderStyle.None,
         ClientSize = new Size(windowSize),
-        Location = new Point(bound.X, bound.Y)
+        Location = new Point(bound.X, bound.Y),
       };
 
       CreateDeviceSwapChainContext();
@@ -69,21 +73,57 @@ namespace GameOfLife
 
       sb = new SpriteBatch();
       inputHandler = new TextureInput(device);
-
       gol = new GameOfLifeCalculator();
       QueryPerformanceFrequency(out freq);
       QueryPerformanceCounter(out tickPrev);
       UI = new Userinterface(inputHandler);
 
-      RenderForm.MouseMove += inputHandler.RegisterInput;
-      RenderForm.MouseDoubleClick += RenderForm_MouseClick;
-      RenderForm.MouseClick += RenderForm_MouseClick;
+      RenderForm.MouseMove += RenderForm_MouseMove;
       RenderForm.MouseWheel += RenderForm_MouseWheel;
+      RenderForm.MouseDown += OnMouseDown;
+      RenderForm.MouseUp += RenderForm_MouseUp;
+
+      RenderForm.Touchdown += OnTouchDownHandler;
+      RenderForm.Touchup += OnTouchUpHandler;
+      RenderForm.TouchMove += OnTouchMoveHandler;
     }
 
-    private void RenderForm_MouseClick(object sender, MouseEventArgs e)
+    bool MouseOnSideBar = false;
+    private void RenderForm_MouseUp(object sender, MouseEventArgs e)
     {
-      if (!UI.OnMouseClick(sender, e))
+      if (MouseOnSideBar && CurrentFingerCoordinates.Count == 0) UI.OnMouseClick(sender, e);
+      MouseOnSideBar = false;
+    }
+
+    private void OnMouseDown(object sender, MouseEventArgs e)
+    {
+      if (UI.IsPointInUI(e.Location)) MouseOnSideBar = true;
+      inputHandler.RegisterMouseDown(sender, e);
+    }
+
+    private void OnTouchDownHandler(object sender, TouchEventArgs e)
+    {
+      if (CurrentFingerCoordinates.Any((s) => s.ID == e.ID)) throw new Exception();
+      CurrentFingerCoordinates.Add(new Finger(e.ID, e.Location, UI.IsPointInUI(e.Location)));
+    }
+
+    private void OnTouchUpHandler(object sender, TouchEventArgs e)
+    {
+      CurrentFingerCoordinates.RemoveAll((s) => s.ID == e.ID);
+      if (UI.IsPointInUI(e.Location) && CurrentFingerCoordinates.Count > 0) UI.OnMouseClick(null, new MouseEventArgs(MouseButtons.Left, 1, e.Location.X, e.Location.Y, 0));
+    }
+
+    private void OnTouchMoveHandler(object sender, TouchEventArgs e)
+    {
+      var stroke = CurrentFingerCoordinates.Where((s) => s.ID == e.ID).First();
+      if (stroke.Disabled) return;
+      inputHandler.RegisterInput(stroke.Location, e.Location);
+      stroke.Location = e.Location;
+    }
+
+    private void RenderForm_MouseMove(object sender, MouseEventArgs e)
+    {
+      if (CurrentFingerCoordinates.Count == 0 && !MouseOnSideBar)
         inputHandler.RegisterInput(sender, e);
     }
 
@@ -116,7 +156,7 @@ namespace GameOfLife
       deviceContext.InputAssembler.InputLayout = layout;
 
       inputHandler.RenderInput(device, deviceContext, gol.OffscreenRenderTarget);
-      
+
       gol.Draw(MainRenderTarget);
 
       sb.Begin(MainRenderTarget);

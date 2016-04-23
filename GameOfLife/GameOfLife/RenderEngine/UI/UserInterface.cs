@@ -71,12 +71,24 @@ namespace GameOfLife.UI
       return sideBar.HandleMouseClick(a.Location);
     }
 
+    public bool OnMouseMove(object sender, MouseEventArgs a)
+    {
+      if (a.Button != MouseButtons.Left || a.Button == MouseButtons.None) return false;
+      return sideBar.HandleMouseMove(a.Location);
+    }
+
+
     internal void Dispose()
     {
       fpsString.Dispose();
       thickness.Dispose();
       pause.Dispose();
       sideBar.Dispose();
+    }
+
+    internal bool IsPointInUI(Point location)
+    {
+      return sideBar.IsPointInsideSidebar(location);
     }
   }
 }

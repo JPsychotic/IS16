@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Buffer = SlimDX.Direct3D11.Buffer;
+using System;
 
 namespace GameOfLife
 {
@@ -72,15 +73,19 @@ namespace GameOfLife
     Point oldMousePos = new Point();
     internal void RegisterInput(object sender, MouseEventArgs a)
     {
-      if (a.Button.HasFlag(MouseButtons.Left))
-      {
-        LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, false, Config.LineThickness));
-      }
-      else if (a.Button.HasFlag(MouseButtons.Right))
-      {
-        LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, true, Config.LineThickness));
-      }
+      if (a.Button == MouseButtons.None) return;
+      LinesTodo.Enqueue(new StrokeInfo(oldMousePos, a.Location, a.Button.HasFlag(MouseButtons.Right), Config.LineThickness));
       oldMousePos = a.Location;
+    }
+
+    internal void RegisterMouseDown(object sender, MouseEventArgs e)
+    {
+      oldMousePos = e.Location;
+    }
+
+    internal void RegisterInput(Point start, Point end)
+    {
+      LinesTodo.Enqueue(new StrokeInfo(start, end, false, Config.LineThickness));
     }
 
     internal void ClearWorld()
