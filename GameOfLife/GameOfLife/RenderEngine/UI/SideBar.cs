@@ -100,6 +100,12 @@ namespace GameOfLife.RenderEngine.UI
       int index = (int)((Rectangle2D)sender).Data;
       Config.BirthRule ^= (uint)(1 << index);
       ((Rectangle2D)sender).Color = (Config.BirthRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
+
+      if((Config.BirthRule & 1 << index) > 0 && (Config.DeathRule & 1 << index) > 0)
+      {
+        Config.DeathRule ^= (uint)(1 << index);
+        death[index].Color = Color.DimGray;
+      }
     }
 
     private void OnDeathChanged(object sender)
@@ -107,6 +113,12 @@ namespace GameOfLife.RenderEngine.UI
       int index = (int)((Rectangle2D)sender).Data;
       Config.DeathRule ^= (uint)(1 << index);
       ((Rectangle2D)sender).Color = (Config.DeathRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
+
+      if ((Config.DeathRule & 1 << index) > 0 && (Config.BirthRule & 1 << index) > 0)
+      {
+        Config.BirthRule ^= (uint)(1 << index);
+        birth[index].Color = Color.DimGray;
+      }
     }
 
     public void Draw(SpriteBatch sb)
@@ -123,7 +135,6 @@ namespace GameOfLife.RenderEngine.UI
       {
         sb.Draw(leftTab);
         sb.DrawString(leftTabStrings);
-
       }
       else if (State == SideBarState.RightTab)
       {

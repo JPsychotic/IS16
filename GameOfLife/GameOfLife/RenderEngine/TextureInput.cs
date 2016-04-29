@@ -87,6 +87,7 @@ namespace GameOfLife
     internal void RegisterInput(Point start, Point end)
     {
       LinesTodo.Enqueue(new StrokeInfo(start, end, false, Config.LineThickness));
+      oldMousePos = end;
     }
 
     internal void ClearWorld()
