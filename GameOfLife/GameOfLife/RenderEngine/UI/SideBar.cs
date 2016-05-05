@@ -63,12 +63,12 @@ namespace GameOfLife.RenderEngine.UI
       GotInputClick += rightTab.Last().HandleInput;
 
       //Farben
-      int colorWidth = (int)(0.026 * Config.Width);
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.0521 * Config.Width, 0) + 47 * offset, colorWidth, 50, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
+      int colorSize = (int)(0.0463 * Config.Height);
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.25 * Width, 0) + 47 * offset, colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.1042 * Config.Width, 0) + 47 * offset, colorWidth, 50, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.5 * Width, 0) + 47 * offset, colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.1563 * Config.Width, 0) + 47 * offset, colorWidth, 50, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.75 * Width, 0) + 47 * offset, colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
 
       // Birth setting buttons

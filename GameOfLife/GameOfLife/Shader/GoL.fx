@@ -33,7 +33,7 @@ PS_IN VS(float4 position : POSITION)
 
 float4 PS(PS_IN input) : SV_Target
 {
-	const float4 dead = float4(0, 0, 0, 0);
+	const float4 dead = float4(0, 0, 0, 1);
 	// ABC
 	// EMD
 	// FGH
@@ -45,7 +45,7 @@ float4 PS(PS_IN input) : SV_Target
 
 	float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
 	float4 alive = pixelCenter;
-	if (alive.x == 0)
+	if (alive.r == 0 && alive.g == 0 && alive.b == 0)
 		alive = float4(1, 0, 0, 1);
 	float4 sum = pixelab + pixelcd + pixelef + pixelgh;
 
@@ -58,7 +58,7 @@ float4 PS(PS_IN input) : SV_Target
 	else if(sum.b > sum.r && sum.b > sum.g)
 		alive = float4(0, 0, 1, 1);
 
-	uint index = round(sum.a);
+	uint index = round(sum.r + sum.g + sum.b);
 	if ((asuint(Rules.x) >> index) & 1 > 0) return alive;
 	if ((asuint(Rules.y) >> index) & 1 > 0) return dead;
 	return pixelCenter;
