@@ -45,17 +45,15 @@ float4 PS(PS_IN input) : SV_Target
 
 	float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
 	float4 alive = pixelCenter;
-	if (alive.r == 0 && alive.g == 0 && alive.b == 0)
-		alive = float4(1, 0, 0, 1);
 	float4 sum = pixelab + pixelcd + pixelef + pixelgh;
 
 	sum *= 2;
 
-	if(sum.r > sum.g && sum.r > sum.b)
+	if(sum.r >= sum.g && sum.r >= sum.b)
 		alive = float4(1, 0, 0, 1);
-	else if(sum.g > sum.r && sum.g > sum.b)
+	else if(sum.g >= sum.r && sum.g >= sum.b)
 		alive = float4(0, 1, 0, 1);
-	else if(sum.b > sum.r && sum.b > sum.g)
+	else if(sum.b >= sum.r && sum.b >= sum.g)
 		alive = float4(0, 0, 1, 1);
 
 	uint index = round(sum.r + sum.g + sum.b);
