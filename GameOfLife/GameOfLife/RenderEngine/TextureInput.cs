@@ -19,8 +19,8 @@ namespace GameOfLife
     Buffer strokeInfoBuffer, miscInfoBuffer;
     Mesh quad;
     int MaxStrokesPerFrame = 10;
-    public Color4 SelectedColor = new Color4(1, 1, 1, 1);
     Color4 DeleteColor = new Color4(1, 0, 0, 0);
+    public Color4 SelectedColor = new Color4(1, 1, 0, 0);
 
     public TextureInput(Device d)
     {
@@ -96,6 +96,11 @@ namespace GameOfLife
       LinesTodo.Enqueue(new StrokeInfo(new Point(Config.Width, 0), new Point(Config.Width, Config.Height), true, Config.Width));
       LinesTodo.Enqueue(new StrokeInfo(new Point(Config.Width, Config.Height), new Point(0, Config.Height), true, Config.Width));
       LinesTodo.Enqueue(new StrokeInfo(new Point(0, Config.Height), new Point(0, 0), true, Config.Height));
+    }
+
+    internal void ChangeColor(Color4 col)
+    {
+      SelectedColor = col;
     }
 
     public void Dispose()

@@ -33,22 +33,32 @@ PS_IN VS(float4 position : POSITION)
 
 float4 PS(PS_IN input) : SV_Target
 {
-	const float4 alive = float4(1, 1, 1, 1);
 	const float4 dead = float4(0, 0, 0, 0);
 	// ABC
 	// EMD
 	// FGH
 
-	float pixelab = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x / 2, -FrameInfo.y)).x;
-	float pixelcd = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y / 2)).x;
-	float pixelef = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y / 2)).x;
-	float pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y)).x;
+	float4 pixelab = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x / 2, -FrameInfo.y));
+	float4 pixelcd = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y / 2));
+	float4 pixelef = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y / 2));
+	float4 pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y));
 
 	float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
-	float sum = pixelab + pixelcd + pixelef + pixelgh;
+	float4 alive = pixelCenter;
+	if (alive.x == 0)
+		alive = float4(1, 0, 0, 1);
+	float4 sum = pixelab + pixelcd + pixelef + pixelgh;
+
 	sum *= 2;
 
-	uint index = round(sum);
+	if(sum.r > sum.g && sum.r > sum.b)
+		alive = float4(1, 0, 0, 1);
+	else if(sum.g > sum.r && sum.g > sum.b)
+		alive = float4(0, 1, 0, 1);
+	else if(sum.b > sum.r && sum.b > sum.g)
+		alive = float4(0, 0, 1, 1);
+
+	uint index = round(sum.a);
 	if ((asuint(Rules.x) >> index) & 1 > 0) return alive;
 	if ((asuint(Rules.y) >> index) & 1 > 0) return dead;
 	return pixelCenter;
