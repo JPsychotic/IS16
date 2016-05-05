@@ -59,8 +59,6 @@ namespace GameOfLife.RenderEngine.UI
       GotInputClick += rightTab.Last().HandleInput;
       rightTab.Add(new Rectangle2D(new Vector2(Width / 2 + (float)0.0625 * Width, (int)(0.12 * Config.Height)), (int)(0.375 * Width), (int)(0.093 * Config.Height), Color.DimGray, (s) => inputHandler.ClearWorld(), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(100, (int)(0.12 * Config.Height)) + 40 * offset, 200, 75, Color.FromArgb(255, 255, 51, 51), (s) => RenderFrame.Instance.Exit(), SideBarState.RightTab));
-      GotInputClick += rightTab.Last().HandleInput;
 
       // Birth setting buttons
       for (int i = 0; i < 9; i++)
@@ -84,7 +82,6 @@ namespace GameOfLife.RenderEngine.UI
       rightTabStrings.Add(new DrawableString("Leeren", new Vector2((float)0.65 * Width, 5) + 8 * offset, Color.White));
       rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.2 * Width, 0) + 15 * offset, Color.White));
       rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.7 * Width, 0) + 15 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Beenden", new Vector2(160, 0) + 48 * offset, Color.White));
       for (int i = 0; i < 9; i++)
       {
         rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.025 * Width, 0) + (19 + 3 * i) * offset, Color.White));
