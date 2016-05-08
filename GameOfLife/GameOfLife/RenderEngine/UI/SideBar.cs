@@ -64,23 +64,25 @@ namespace GameOfLife.RenderEngine.UI
 
       //Farben
       int colorSize = (int)(0.0463 * Config.Height);
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.25 * Width, 0) + 47 * offset, colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.1875 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.5 * Width, 0) + 47 * offset, colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.375 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.75 * Width, 0) + 47 * offset, colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.5625 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
+      GotInputClick += rightTab.Last().HandleInput;
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.75 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
 
       // Birth setting buttons
       for (int i = 0; i < 9; i++)
       {
-        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (19 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
+        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
 
       }
       // Death setting buttons
       for (int i = 0; i < 9; i++)
       {
-        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (19 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
+        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
       }
 
       foreach (var r in birth.Concat(death))
@@ -91,13 +93,13 @@ namespace GameOfLife.RenderEngine.UI
 
       rightTabStrings.Add(new DrawableString("Pause", new Vector2((float)0.1625 * Width, 5) + 6 * offset, Color.White));
       rightTabStrings.Add(new DrawableString("Leeren", new Vector2((float)0.65 * Width, 5) + 6 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.2 * Width, 0) + 16 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.7 * Width, 0) + 16 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.2 * Width, 0) + 20 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.7 * Width, 0) + 20 * offset, Color.White));
       rightTabStrings.Add(new DrawableString("Beenden", new Vector2(160, 0) + 12 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 10) + 47 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 10) + 16 * offset, Color.White));
       for (int i = 0; i < 9; i++)
       {
-        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.025 * Width, 0) + (19 + 3 * i) * offset, Color.White));
+        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.025 * Width, 0) + (23 + 3 * i) * offset, Color.White));
       }
       rightTabStrings.Add(minimizeString);
 

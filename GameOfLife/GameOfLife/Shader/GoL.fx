@@ -59,7 +59,9 @@ float4 PS(PS_IN input) : SV_Target
 	uint index = round(sum.r + sum.g + sum.b);
 	if ((asuint(Rules.x) >> index) & 1 > 0) return alive;
 	if ((asuint(Rules.y) >> index) & 1 > 0) return dead;
-	return pixelCenter;
+	if(pixelCenter.r == 0 && pixelCenter.g == 0 && pixelCenter.b == 0)
+		return pixelCenter;
+	return alive;
 }
 
 //float4 pixelOL = golTex.Sample(PointSampler, input.tex - FrameInfo.xy);
