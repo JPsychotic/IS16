@@ -1,7 +1,5 @@
 ﻿using GameOfLife.RenderEngine.UI.Elements;
 using GameOfLife.Storage;
-using GameOfLife.UI;
-using GameOfLife.UI.Elements;
 using SlimDX;
 using System;
 using System.Collections.Generic;
@@ -43,7 +41,7 @@ namespace GameOfLife.RenderEngine.UI
       sideBarBackground.Add(new Rectangle2D(new Vector2(0, 0), Width, Config.Height, Color.FromArgb(200, 200, 200, 200)));
       sideBarBackground.Add(new Rectangle2D(new Vector2(0, 0), Width / 2, (int)(0.074 * Config.Height), Color.DimGray, (s) => State = SideBarState.LeftTab, SideBarState.RightTab)); // left tab
       GotInputClick += sideBarBackground.Last().HandleInput;
-      sideBarBackground.Add(new Rectangle2D(new Vector2(Width / 2, 0), Width / 2, (int)(0.074 * Config.Height), activeTabColor, (s) => State = SideBarState.RightTab, SideBarState.LeftTab)); //right tab
+      sideBarBackground.Add(new Rectangle2D(new Vector2(Width / 2f, 0), Width / 2, (int)(0.074 * Config.Height), activeTabColor, (s) => State = SideBarState.RightTab, SideBarState.LeftTab)); //right tab
       GotInputClick += sideBarBackground.Last().HandleInput;
       rightTab.Add(new Rectangle2D(new Vector2(0, Config.Height - (int)(0.093 * Config.Height)), Width, (int)(0.093 * Config.Height), Color.DimGray, (s) => State = SideBarState.Minimized, SideBarState.LeftTab | SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
@@ -51,13 +49,13 @@ namespace GameOfLife.RenderEngine.UI
       GotInputClick += maximize.HandleInput;
 
       var leftTabString = new DrawableString("Muster", new Vector2((float)0.1625 * Width, 5) + offset, Color.White);
-      var rightTabString = new DrawableString("Einstellungen", new Vector2(Width / 2 + (float)0.0625 * Width, 5) + offset, Color.White);
+      var rightTabString = new DrawableString("Einstellungen", new Vector2(Width / 2f + (float)0.0625 * Width, 5) + offset, Color.White);
       var minimizeString = new DrawableString("Einklappen", new Vector2((float)0.35 * Width, Config.Height - (int)(0.06 * Config.Height)), Color.White);
-      maximizeString = new DrawableString(">", new Vector2((float)0.0125 * Width, Config.Height / 2), Color.White);
+      maximizeString = new DrawableString(">", new Vector2((float)0.0125 * Width, Config.Height / 2f), Color.White);
 
       rightTab.Add(new Rectangle2D(new Vector2((float)0.0625 * Width, (int)(0.093 * Config.Height)), (int)(0.375 * Width), (int)(0.074 * Config.Height), Color.DimGray, (s) => Config.Paused = !Config.Paused, SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(Width / 2 + (float)0.0625 * Width, (int)(0.093 * Config.Height)), (int)(0.375 * Width), (int)(0.074 * Config.Height), Color.DimGray, (s) => inputHandler.ClearWorld(), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(Width / 2f + (float)0.0625 * Width, (int)(0.093 * Config.Height)), (int)(0.375 * Width), (int)(0.074 * Config.Height), Color.DimGray, (s) => inputHandler.ClearWorld(), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
       rightTab.Add(new Rectangle2D(new Vector2((float)0.0625 * Width, (int)(0.12 * Config.Height)) + 4 * offset, (int)(Width - 2 * (float)0.0625 * Width), 75, Color.FromArgb(255, 255, 51, 51), (s) => RenderFrame.Instance.Exit(), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
@@ -172,7 +170,7 @@ namespace GameOfLife.RenderEngine.UI
     {
       if (IsPointInsideSidebar(loc))
       {
-        GotInputClick(loc, State);
+        GotInputClick?.Invoke(loc, State);
         return true;
       }
       return false;

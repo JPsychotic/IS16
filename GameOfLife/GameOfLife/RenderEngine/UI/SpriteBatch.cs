@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using GameOfLife.UI.Elements;
-using SlimDX.Direct3D11;
-using GameOfLife.RenderEngine;
-using System;
-using SlimDX.DXGI;
+﻿using System;
+using System.Collections.Generic;
 using GameOfLife.RenderEngine.UI.Elements;
+using SlimDX.Direct3D11;
+using SlimDX.DXGI;
 
-namespace GameOfLife.UI
+namespace GameOfLife.RenderEngine.UI
 {
   class SpriteBatch
   {

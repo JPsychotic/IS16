@@ -1,6 +1,5 @@
 ﻿using SlimDX.Windows;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -17,6 +16,7 @@ namespace GameOfLife.TouchInput
     
     public TouchForm(string text)
     {
+      // ReSharper disable once VirtualMemberCallInConstructor
       Text = text;
       if (!RegisterTouchWindow(Handle, 0))
       {
@@ -37,23 +37,16 @@ namespace GameOfLife.TouchInput
     {
       public int x;
       public int y;
-      public IntPtr hSource;
+      private IntPtr hSource;
       public int dwID;
       public int dwFlags;
-      public int dwMask;
-      public int dwTime;
-      public IntPtr dwExtraInfo;
-      public int cxContact;
-      public int cyContact;
+      private int dwMask;
+      private int dwTime;
+      private IntPtr dwExtraInfo;
+      private int cxContact;
+      private int cyContact;
     }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct POINTS
-    {
-      public short x;
-      public short y;
-    }
-
+    
     [DllImport("user32")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool RegisterTouchWindow(IntPtr hWnd, ulong ulFlags);
@@ -68,10 +61,9 @@ namespace GameOfLife.TouchInput
 
     protected override void WndProc(ref Message m)
     {
-      bool handled;
       if (m.Msg == WM_TOUCH)
       {
-        handled = DecodeTouch(ref m);
+        var handled = DecodeTouch(ref m);
         if (handled) m.Result = new IntPtr(1);
       }
       base.WndProc(ref m);
@@ -106,10 +98,12 @@ namespace GameOfLife.TouchInput
         {
           // TOUCHINFO point coordinates size is in 1/100 of a pixel
           // convert screen to client coordinates.
-          var te = new TouchEventArgs();
-          te.Location = PointToClient(new Point(tochInput.x / 100, tochInput.y / 100));
-          te.ID = tochInput.dwID;
-          te.Flags = tochInput.dwFlags;
+          var te = new TouchEventArgs
+          {
+            Location = PointToClient(new Point(tochInput.x/100, tochInput.y/100)),
+            ID = tochInput.dwID,
+            Flags = tochInput.dwFlags
+          };
           handler(this, te);
           handled = true;
         }

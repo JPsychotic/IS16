@@ -35,8 +35,8 @@ namespace GameOfLife.Storage
     // bits an: 111110011
     // == 0x1F3
 
-    public static uint BirthRule { get; internal set; } = 0x8;
-    public static uint DeathRule { get; internal set; } = 0x1F3;
+    public static uint BirthRule { get; internal set; }
+    public static uint DeathRule { get; internal set; }
 
     public static int MSAA_SampleCount = 1;
     public static int MSAA_Quality = 1;

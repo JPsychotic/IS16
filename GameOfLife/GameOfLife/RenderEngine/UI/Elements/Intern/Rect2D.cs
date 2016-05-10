@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using SlimDX;
-using GameOfLife.RenderEngine;
 using GameOfLife.Storage;
+using SlimDX;
 
-namespace GameOfLife.UI.Elements
+namespace GameOfLife.RenderEngine.UI.Elements.Intern
 {
   class Rect2D
   {
@@ -24,9 +23,9 @@ namespace GameOfLife.UI.Elements
 
     #endregion AlternativeConstructors
 
-    static internal float width = Config.Width;
-    static internal float height = Config.Height;
-    static internal List<short> indices = new List<short> { 1, 0, 3, 1, 3, 2 };
+    internal static float width = Config.Width;
+    internal static float height = Config.Height;
+    internal static List<short> indices = new List<short> { 1, 0, 3, 1, 3, 2 };
 
     internal Mesh mesh;
     internal int X, Y, SizeY, SizeX;

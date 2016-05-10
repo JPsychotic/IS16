@@ -5,16 +5,15 @@ using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
-using SlimDX.Windows;
 using Device = SlimDX.Direct3D11.Device;
 using Resource = SlimDX.Direct3D11.Resource;
 using GameOfLife.RenderEngine;
 using GameOfLife.Storage;
-using GameOfLife.UI;
 using System.Threading;
 using System.Linq;
 using GameOfLife.TouchInput;
 using System.Collections.Generic;
+using GameOfLife.RenderEngine.UI;
 
 namespace GameOfLife
 {
@@ -36,8 +35,6 @@ namespace GameOfLife
     InputLayout layout;
     readonly GameOfLifeCalculator gol;
     readonly Userinterface UI;
-    readonly Color4 clearColor = new Color4(0, 0, 0, 0);
-    float totalTimeElapsed;
     TextureInput inputHandler;
 
     Texture2DDescription ShaderInputTexDescription;
@@ -67,7 +64,7 @@ namespace GameOfLife
       };
 
       CreateDeviceSwapChainContext();
-      Initialize(windowSize);
+      Initialize();
       SetContextStates();
       OverrideEvents();
 
@@ -115,7 +112,7 @@ namespace GameOfLife
 
     private void OnTouchMoveHandler(object sender, TouchEventArgs e)
     {
-      var stroke = CurrentFingerCoordinates.Where((s) => s.ID == e.ID).First();
+      var stroke = CurrentFingerCoordinates.First(s => s.ID == e.ID);
       if (stroke.Disabled) return;
       inputHandler.RegisterInput(stroke.Location, e.Location);
       stroke.Location = e.Location;
@@ -144,7 +141,6 @@ namespace GameOfLife
 
     public void Update(float elapsed)
     {
-      totalTimeElapsed += elapsed;
       UI.Update(elapsed);
     }
 
@@ -228,7 +224,7 @@ namespace GameOfLife
       renderTargetDepthStencil = new DepthStencilView(device, DepthBuffer, dsViewDesc);
     }
 
-    private void Initialize(Point windowSize)
+    private void Initialize()
     {
       ShaderInputTexDescription = new Texture2DDescription
       {

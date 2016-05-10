@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace GameOfLife
+namespace GameOfLife.TouchInput
 {
   public class Finger
   {

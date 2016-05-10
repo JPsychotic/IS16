@@ -10,10 +10,7 @@ namespace GameOfLife.TouchInput
     public int ID;
     public int Flags;
 
-    public bool IsPrimaryContact
-    {
-      get { return (Flags & TOUCHEVENTF_PRIMARY) != 0; }
-    }
+    public bool IsPrimaryContact => (Flags & TOUCHEVENTF_PRIMARY) != 0;
   }
 
 }

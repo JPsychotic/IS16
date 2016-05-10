@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using SlimDX;
-using GameOfLife.Storage;
 using System.Drawing;
+using GameOfLife.Storage;
+using SlimDX;
 
-namespace GameOfLife.RenderEngine
+namespace GameOfLife.RenderEngine.UI.Elements
 {
     class DrawableString
     {

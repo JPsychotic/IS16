@@ -1,24 +1,24 @@
 ﻿using SlimDX.Direct3D11;
 
-namespace GameOfLife
+namespace GameOfLife.RenderEngine
 {
     class States
     {
-        public DepthStencilState depthEnabledStencilDisabledWriteEnabled { get; private set; }
-        public DepthStencilState depthEnabledStencilDisabledWriteDisabled { get; private set; }
-        public DepthStencilState depthDisabledStencilDisabledWriteEnabled { get; private set; }
+        public DepthStencilState depthEnabledStencilDisabledWriteEnabled { get; }
+        public DepthStencilState depthEnabledStencilDisabledWriteDisabled { get; }
+        public DepthStencilState depthDisabledStencilDisabledWriteEnabled { get; }
         public DepthStencilState depthDisabledStencilDisabledWriteDisabled { get; private set; }
-        public RasterizerState cullNoneFillSolid { get; private set; }
-        public RasterizerState cullNoneFillWireframe { get; private set; }
-        public RasterizerState cullBackFillSolid { get; private set; }
-        public RasterizerState cullBackFillWireframe { get; private set; }
-        public RasterizerState cullFrontFillSolid { get; private set; }
-        public RasterizerState cullFrontFillWireframe { get; private set; }
-        public BlendState blendDisabled { get; private set; }
-        public BlendState blendEnabledSourceAlphaInverseSourceAlpha { get; private set; }
-        public BlendState blendEnabledSourceAlphaDestinationAlpha { get; private set; }
-        public BlendState blendEnabledOneOne { get; private set; }
-        public BlendState blendEnabledAlphaBlending { get; private set; }
+        public RasterizerState cullNoneFillSolid { get; }
+        public RasterizerState cullNoneFillWireframe { get; }
+        public RasterizerState cullBackFillSolid { get; }
+        public RasterizerState cullBackFillWireframe { get; }
+        public RasterizerState cullFrontFillSolid { get; }
+        public RasterizerState cullFrontFillWireframe { get; }
+        public BlendState blendDisabled { get; }
+        public BlendState blendEnabledSourceAlphaInverseSourceAlpha { get; }
+        public BlendState blendEnabledSourceAlphaDestinationAlpha { get; }
+        public BlendState blendEnabledOneOne { get; }
+        public BlendState blendEnabledAlphaBlending { get; }
 
         public static readonly States Instance = new States();
 

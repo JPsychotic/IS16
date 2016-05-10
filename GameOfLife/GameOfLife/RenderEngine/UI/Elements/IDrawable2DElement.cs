@@ -1,8 +1,6 @@
-﻿using GameOfLife.RenderEngine.UI;
-using System;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace GameOfLife.UI.Elements
+namespace GameOfLife.RenderEngine.UI.Elements
 {
   interface IDrawable2DElement
   {

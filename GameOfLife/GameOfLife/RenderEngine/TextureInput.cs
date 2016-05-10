@@ -1,14 +1,12 @@
-﻿using GameOfLife.RenderEngine;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 using GameOfLife.Storage;
 using SlimDX;
 using SlimDX.Direct3D11;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 using Buffer = SlimDX.Direct3D11.Buffer;
-using System;
 
-namespace GameOfLife
+namespace GameOfLife.RenderEngine
 {
   class TextureInput
   {

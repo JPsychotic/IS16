@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using GameOfLife.UI.Elements;
+using GameOfLife.RenderEngine.UI.Elements.Intern;
 using SlimDX;
 
 namespace GameOfLife.RenderEngine.UI.Elements
@@ -8,12 +8,11 @@ namespace GameOfLife.RenderEngine.UI.Elements
   class Rectangle2D : IDrawable2DElement
   {
     private Rect2D rect;
-    private Action action;
     public object Data;
 
     public event ChangedEventHandler GotInput;
 
-    public Rectangle BoundingBox { get { return rect.BoundingBox; } }
+    public Rectangle BoundingBox => rect.BoundingBox;
 
     public Rectangle2D(int x, int y, int sizeX, int sizeY, Color col)
     {
@@ -28,7 +27,7 @@ namespace GameOfLife.RenderEngine.UI.Elements
     public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Color col, Action<object> act, SideBarState state, object data = null) : this(pos, sizeX, sizeY, col)
     {
       Data = data;
-      GotInput += (s) => { if (state.HasFlag(s)) act(this); };
+      GotInput += s => { if (state.HasFlag(s)) act(this); };
     }
 
     public void SetPosition(Vector2 pos)

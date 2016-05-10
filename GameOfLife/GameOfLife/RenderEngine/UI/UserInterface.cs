@@ -1,12 +1,11 @@
 ﻿using System;
-using SlimDX;
-using GameOfLife.Storage;
 using System.Drawing;
-using GameOfLife.RenderEngine;
-using GameOfLife.RenderEngine.UI;
 using System.Windows.Forms;
+using GameOfLife.RenderEngine.UI.Elements;
+using GameOfLife.Storage;
+using SlimDX;
 
-namespace GameOfLife.UI
+namespace GameOfLife.RenderEngine.UI
 {
 
   class Userinterface

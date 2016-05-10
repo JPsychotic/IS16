@@ -19,7 +19,6 @@ namespace GameOfLife.RenderEngine
     public GameOfLifeCalculator()
     {
       var d = RenderFrame.Instance.device;
-      var c = d.ImmediateContext;
 
       var ShaderInputTexDescription = new Texture2DDescription
       {
@@ -43,19 +42,6 @@ namespace GameOfLife.RenderEngine
 
       GoLPS = ShaderProvider.CompilePS("./Shader/GoL.fx");
       GoLVS = ShaderProvider.CompileVS("./Shader/GoL.fx");
-
-      var ShaderOutputTexDescription = new Texture2DDescription
-      {
-        ArraySize = 1,
-        Width = Config.Width,
-        Height = Config.Height,
-        BindFlags = BindFlags.RenderTarget,
-        CpuAccessFlags = CpuAccessFlags.None,
-        Format = Format.R8G8B8A8_UNorm,
-        Usage = ResourceUsage.Default,
-        MipLevels = 1,
-        SampleDescription = new SampleDescription(1, 0)
-      };
 
       CBuffer = new Buffer(d, Vector4.SizeInBytes * 2, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
 

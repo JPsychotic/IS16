@@ -1,4 +1,4 @@
-﻿namespace GameOfLife.UI
+﻿namespace GameOfLife.RenderEngine.UI
 {
     public enum InterfaceState
     {
