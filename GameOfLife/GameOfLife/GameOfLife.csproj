@@ -110,7 +110,8 @@
     <Compile Include="RenderEngine\UI\Elements\Rectangle2D.cs" />
     <Compile Include="RenderEngine\UI\Elements\Textbox2D.cs" />
     <Compile Include="RenderEngine\UI\InterfaceStates.cs" />
-    <Compile Include="RenderEngine\UI\SideBar.cs" />
+    <Compile Include="RenderEngine\UI\Sidebar\PatternManager.cs" />
+    <Compile Include="RenderEngine\UI\Sidebar\SideBar.cs" />
     <Compile Include="RenderEngine\UI\SpriteBatch.cs" />
     <Compile Include="RenderEngine\UI\UserInterface.cs" />
     <Compile Include="RenderEngine\Vertex.cs" />
@@ -120,12 +121,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage\Config.cs" />
     <Compile Include="RenderEngine\TextureInput.cs" />
-    <Compile Include="TouchInput\Stroke.cs" />
+    <Compile Include="TouchInput\Finger.cs" />
     <Compile Include="TouchInput\TouchEventArgs.cs" />
     <Compile Include="TouchInput\TouchForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Content Include="Content\font.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Muster\24,3\Test.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Muster\23,3\Gleiter.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Shader\GoL.fx">

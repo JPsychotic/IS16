@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using GameOfLife.RenderEngine.UI.Sidebar;
 
 namespace GameOfLife.RenderEngine.UI.Elements
 {

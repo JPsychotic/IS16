@@ -28,6 +28,7 @@ namespace GameOfLife.RenderEngine.UI
            new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0, 0),
            new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 16, 0)
       };
+
       layoutSprite = new InputLayout(RenderFrame.Instance.device, ShaderProvider.GetSignatureFromShader("Shader/Sprite2D.fx"), inputElements);
 
       tex = Texture2D.FromFile(RenderFrame.Instance.device, @".\Content\Font.png");
@@ -80,6 +81,7 @@ namespace GameOfLife.RenderEngine.UI
       c.OutputMerger.SetTargets(target);
       c.InputAssembler.InputLayout = layoutSprite;
       c.OutputMerger.BlendState = States.Instance.blendEnabledAlphaBlending;
+      c.PixelShader.SetSampler(SamplerStates.Instance.LinSampler, 0);
       c.PixelShader.SetSampler(SamplerStates.Instance.PointSampler, 1);
 
       while (spriteQueue.Count > 0)

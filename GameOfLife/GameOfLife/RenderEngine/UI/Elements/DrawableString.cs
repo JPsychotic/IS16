@@ -74,7 +74,7 @@ namespace GameOfLife.RenderEngine.UI.Elements
 
         public static Vector2 Measure(string s)
         {
-            return new Vector2(s.Length * FontWidth, FontHeight);
+            return new Vector2(s.Length * FontWidth * 2, FontHeight*2);
         }
     }
 }

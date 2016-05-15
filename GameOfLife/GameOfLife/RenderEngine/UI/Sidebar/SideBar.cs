@@ -1,12 +1,12 @@
-﻿using GameOfLife.RenderEngine.UI.Elements;
-using GameOfLife.Storage;
-using SlimDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using GameOfLife.RenderEngine.UI.Elements;
+using GameOfLife.Storage;
+using SlimDX;
 
-namespace GameOfLife.RenderEngine.UI
+namespace GameOfLife.RenderEngine.UI.Sidebar
 {
   class SideBar
   {
@@ -64,14 +64,14 @@ namespace GameOfLife.RenderEngine.UI
       GotInputClick += closebtn.HandleInput;
 
       //Farben
-      int colorSize = (int)(0.0463 * Config.Height);
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.1875 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
+      int colorSize = (int)(0.09 * Config.Height);
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.1875 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.375 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.375 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.5625 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.5625 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.75 * Width, 0) + 16 * offset, colorSize, colorSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2((float)0.75 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
 
       // Birth setting buttons
@@ -99,7 +99,7 @@ namespace GameOfLife.RenderEngine.UI
       rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.7 * Width, 0) + 20 * offset, Color.White));
       size = DrawableString.Measure("Beenden");
       rightTabStrings.Add(new DrawableString("Beenden", closebtn.Location + closebtn.Size / 2 - size / 2, Color.White));
-      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 10) + 16 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 0.2f * Config.Height + colorSize / 2f -offset.Y), Color.White));
       for (int i = 0; i < 9; i++)
       {
         rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.025 * Width, 0) + (23 + 3 * i) * offset, Color.White));
@@ -118,7 +118,7 @@ namespace GameOfLife.RenderEngine.UI
     {
       int index = (int)((Rectangle2D)sender).Data;
       Config.BirthRule ^= (uint)(1 << index);
-      ((Rectangle2D)sender).Color = (Config.BirthRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
+      birth[index].Color = (Config.BirthRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
 
       if ((Config.BirthRule & 1 << index) > 0 && (Config.DeathRule & 1 << index) > 0)
       {
@@ -131,7 +131,7 @@ namespace GameOfLife.RenderEngine.UI
     {
       int index = (int)((Rectangle2D)sender).Data;
       Config.DeathRule ^= (uint)(1 << index);
-      ((Rectangle2D)sender).Color = (Config.DeathRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
+      death[index].Color = (Config.DeathRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
 
       if ((Config.DeathRule & 1 << index) > 0 && (Config.BirthRule & 1 << index) > 0)
       {
