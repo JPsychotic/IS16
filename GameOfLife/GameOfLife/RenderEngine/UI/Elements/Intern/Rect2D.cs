@@ -22,20 +22,22 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
         : this(x, y, (int)size.X, (int)size.Y, col)
     { }
 
-    public Rect2D(int x, int y, int sizeX, int sizeY, Texture2D tex) : this(x, y, sizeX, sizeY, new Color4(1, 1, 1, 1))
+    public Rect2D(int x, int y, int sizeX, int sizeY, Texture2D tex) : this(x, y, sizeX, sizeY, new Color4(1, 1, 0, 0))
     {
       texture = tex;
       texView = new ShaderResourceView(RenderFrame.Instance.device, tex);
+
+      Update();
     }
 
     #endregion AlternativeConstructors
 
     internal static float width = Config.Width;
     internal static float height = Config.Height;
-    internal static List<short> indices = new List<short> { 1,3,2,1,0,3};
+    internal static List<short> indices = new List<short> { 1, 3, 2, 1, 0, 3 };
 
     static Mesh mesh = CreateMesh();
-    internal int X, Y, SizeY, SizeX;
+    private int X, Y, SizeY, SizeX;
     internal Color4 Color;
     internal RectangleF BoundingBox;
     internal Texture2D texture;
@@ -45,7 +47,7 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
     public Rect2D(int x, int y, int sizeX, int sizeY, Color4 col)
     {
       X = x;
-      Y = Config.Height- y; // nullpunkt muss korrigiert werden weil er bei DirectX unten links und nich oben links ist.
+      Y = Config.Height - y; // nullpunkt muss korrigiert werden weil er bei DirectX unten links und nich oben links ist.
       SizeX = sizeX;
       SizeY = -sizeY;
       Color = col;
@@ -74,10 +76,11 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
       var c = RenderFrame.Instance.deviceContext;
       BoundingBox = new RectangleF(X, Config.Height - Y, SizeX, -SizeY);
 
+      float texAvailable = texView != null ? 2 : 0;
       DataBox databox = c.MapSubresource(Cbuffer, 0, MapMode.WriteDiscard, 0);
       databox.Data.Position = 0;
       databox.Data.Write(new Vector4(X / width * 2 - 1, Y / height * 2 - 1, SizeX / width, SizeY / height));
-      databox.Data.Write(new Vector4(texture != null ? 2 : 0, 0, 0, 0));
+      databox.Data.Write(new Vector4(texAvailable, texAvailable, texAvailable, texAvailable));
       databox.Data.Write(Color.ToVector4());
       c.UnmapSubresource(Cbuffer, 0);
     }
@@ -86,11 +89,34 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
     {
       var c = RenderFrame.Instance.deviceContext;
       if (texView != null) c.PixelShader.SetShaderResource(texView, 0);
-      c.PixelShader.SetConstantBuffer(Cbuffer, 2);
       c.VertexShader.SetConstantBuffer(Cbuffer, 2);
+      c.PixelShader.SetConstantBuffer(Cbuffer, 2);
       mesh.Render();
     }
 
+    public void SetSize(int sizeX, int sizeY)
+    {
+      SizeX = sizeX;
+      SizeY = -sizeY;
+      Update();
+    }
+
+    public void SetPosition(int x, int y)
+    {
+      X = x;
+      Y = Config.Height - y;
+      Update();
+    }
+
+    public void SetPositionAndSize(int x, int y, int sizeX, int sizeY)
+    {
+      X = x;
+      Y = Config.Height - y;
+      SizeX = sizeX;
+      SizeY = -sizeY;
+      Update();
+    }
+    
     public void Dispose()
     {
       //mesh.Dispose();

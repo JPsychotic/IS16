@@ -45,24 +45,19 @@ namespace GameOfLife.RenderEngine.UI.Elements
     public Vector2 Location => new Vector2(rect.BoundingBox.Location.X, rect.BoundingBox.Location.Y);
     public Vector2 Size => new Vector2(rect.BoundingBox.Size.Width, rect.BoundingBox.Size.Height);
 
-    public void SetPosition(Vector2 pos)
+    public void SetPosition(int x, int y)
     {
-      rect.X = (int)pos.X;
-      rect.Y = (int)pos.Y;
+      rect.SetPosition(x, y);
     }
 
-    public void SetSize(Vector2 size)
+    public void SetSize(int sizeX, int sizeY)
     {
-      rect.SizeX = (int)size.X;
-      rect.SizeY = (int)size.Y;
+      rect.SetSize(sizeX, sizeY);
     }
 
-    public void SetPositionAndSize(Vector2 pos, Vector2 size)
+    public void SetPositionAndSize(int x, int y, int sizeX, int sizeY)
     {
-      rect.X = (int)pos.X;
-      rect.Y = (int)pos.Y;
-      rect.SizeX = (int)size.X;
-      rect.SizeY = (int)size.Y;
+      rect.SetPositionAndSize(x, y, sizeX, sizeY);
     }
 
     public void Update()

@@ -35,8 +35,11 @@ namespace GameOfLife.Storage
     // bits an: 111110011
     // == 0x1F3
 
-    public static uint BirthRule { get; internal set; }
-    public static uint DeathRule { get; internal set; }
+    public static event RuleChangedEventHandler RulesChanged;
+
+    static uint death, birth;
+    public static uint BirthRule { get { return birth; } internal set { birth = value; RulesChanged?.Invoke(); } }
+    public static uint DeathRule { get { return death; } internal set { death = value; RulesChanged?.Invoke(); } }
 
     public static int MSAA_SampleCount = 1;
     public static int MSAA_Quality = 1;
@@ -50,17 +53,8 @@ namespace GameOfLife.Storage
       // 23/3 normal
       // 237/3 normal aber eher ausbreitend
       // 238/3 normal aber mit schweif (leicht anderes verhalten)
-      string Rule = "238/3";
-      DeathRule = 0x1FF;
-      foreach (var c in Rule.Split('/')[0])
-      {
-        DeathRule -= (uint)(1 << int.Parse(c.ToString()));
-      }
-      BirthRule = 0;
-      foreach (var c in Rule.Split('/')[1])
-      {
-        BirthRule |= (uint)(1 << int.Parse(c.ToString()));
-      }
+
+      SetRuleFromString("23/3");
 
       ShowFPS = true;
       CultureInfo customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
@@ -68,6 +62,36 @@ namespace GameOfLife.Storage
       Thread.CurrentThread.CurrentCulture = customCulture;
 
       ReadConfig();
+    }
+
+    public static void SetRuleFromString(string rule)
+    {
+      DeathRule = 0x1FF;
+      foreach (var c in rule.Split('/')[0])
+      {
+        DeathRule -= (uint)(1 << int.Parse(c.ToString()));
+      }
+      BirthRule = 0;
+      foreach (var c in rule.Split('/')[1])
+      {
+        BirthRule |= (uint)(1 << int.Parse(c.ToString()));
+      }
+    }
+
+    public static string GetRuleAsString()
+    {
+      string rule = "";
+      for (int i = 0; i < 9; i++)
+      {
+        if (((DeathRule >> i) & 1) == 0) rule += i;
+      }
+      rule += "/";
+      for (int i = 0; i < 9; i++)
+      {
+        if (((BirthRule >> i) & 1) > 0) rule += i;
+      }
+
+      return rule;
     }
 
     public static void ReadConfig()
@@ -171,4 +195,6 @@ namespace GameOfLife.Storage
       File.WriteAllLines("config.ini", lines);
     }
   }
+
+  public delegate void RuleChangedEventHandler();
 }

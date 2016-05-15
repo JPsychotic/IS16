@@ -1,4 +1,5 @@
 ﻿SamplerState LinearSampler : register(s0);
+SamplerState PointSampler : register(s1);
 
 const Texture2D tex : register(t0);
 
@@ -25,15 +26,14 @@ struct PS_IN
 PS_IN VS(VS_IN input)
 {
 	PS_IN output;
-	output.pos = float4(RectLocSize.xy + float2(RectLocSize.z * input.pos.x, RectLocSize.w * input.pos.y)*2, 0, 1); // 
+	output.pos = float4(RectLocSize.xy + float2(RectLocSize.z * input.pos.x, RectLocSize.w * input.pos.y) * 2, 0, 1); // 
 	output.tex = float4(input.pos.xy, float2(output.pos.xy) / 2 + float2(0.5, -0.5));
 	return output;
 }
 
 float4 PS(PS_IN input) : SV_Target
 {
-    return RectColor;
-	if (RectTex.x < 1) return RectColor;
-	float4 col = tex.Sample(LinearSampler, input.tex.xy);
+	if (RectTex.y < 1) return RectColor;
+	float4 col = float4(tex.Sample(PointSampler, input.tex.xy).rgb,1);
 	return col;
 }

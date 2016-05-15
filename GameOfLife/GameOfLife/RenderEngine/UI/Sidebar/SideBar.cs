@@ -11,6 +11,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
   class SideBar
   {
     TextureInput inputHandler;
+    PatternManager pm;
 
     public int Width = 400;
     public int MinimizedWidth = 20;
@@ -34,23 +35,27 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     List<Rectangle2D> birth = new List<Rectangle2D>();
     List<Rectangle2D> death = new List<Rectangle2D>();
 
+
     public SideBar(TextureInput iHandler)
     {
       inputHandler = iHandler;
 
+      // hintergrund
       sideBarBackground.Add(new Rectangle2D(new Vector2(0, 0), Width, Config.Height, Color.FromArgb(200, 200, 200, 200)));
-      sideBarBackground.Add(new Rectangle2D(new Vector2(0, 0), Width / 2, (int)(0.074 * Config.Height), Color.DimGray, (s) => State = SideBarState.LeftTab, SideBarState.RightTab)); // left tab
-      GotInputClick += sideBarBackground.Last().HandleInput;
-      sideBarBackground.Add(new Rectangle2D(new Vector2(Width / 2f, 0), Width / 2, (int)(0.074 * Config.Height), activeTabColor, (s) => State = SideBarState.RightTab, SideBarState.LeftTab)); //right tab
-      GotInputClick += sideBarBackground.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0, Config.Height - (int)(0.093 * Config.Height)), Width, (int)(0.093 * Config.Height), Color.DimGray, (s) => State = SideBarState.Minimized, SideBarState.LeftTab | SideBarState.RightTab));
+      // 2 button oben zum umschalten zwischen den tabs
+      rightTab.Add(new Rectangle2D(new Vector2(0, 0), Width / 2, (int)(0.074 * Config.Height), Color.DimGray, (s) => State = SideBarState.LeftTab, SideBarState.RightTab)); // left tab
       GotInputClick += rightTab.Last().HandleInput;
+      leftTab.Add(new Rectangle2D(new Vector2(Width / 2f, 0), Width / 2, (int)(0.074 * Config.Height), Color.DimGray, (s) => State = SideBarState.RightTab, SideBarState.LeftTab)); //right tab
+      GotInputClick += leftTab.Last().HandleInput;
+
+      sideBarBackground.Add(new Rectangle2D(new Vector2(0, Config.Height - (int)(0.074 * Config.Height)), Width, (int)(0.093 * Config.Height), Color.DimGray, (s) => State = SideBarState.Minimized, SideBarState.LeftTab | SideBarState.RightTab));
+      GotInputClick += sideBarBackground.Last().HandleInput;
       maximize = new Rectangle2D(new Vector2(0, 0), MinimizedWidth, Config.Height, Color.FromArgb(200, 200, 200, 200), (s) => State = SideBarState.RightTab, SideBarState.Minimized);
       GotInputClick += maximize.HandleInput;
 
       var leftTabString = new DrawableString("Muster", new Vector2((float)0.1625 * Width, 5) + offset, Color.White);
       var rightTabString = new DrawableString("Einstellungen", new Vector2(Width / 2f + (float)0.0625 * Width, 5) + offset, Color.White);
-      var minimizeString = new DrawableString("Einklappen", new Vector2((float)0.35 * Width, Config.Height - (int)(0.06 * Config.Height)), Color.White);
+      var minimizeString = new DrawableString("Einklappen", new Vector2((float)0.35 * Width, Config.Height - (int)(0.05 * Config.Height)), Color.White);
       maximizeString = new DrawableString(">", new Vector2((float)0.0125 * Width, Config.Height / 2f), Color.White);
 
       var pausebtn = new Rectangle2D(new Vector2((float)0.0625 * Width, (int)(0.093 * Config.Height)), (int)(0.25 * Width), (int)(0.074 * Config.Height), Color.DimGray, (s) => Config.Paused = !Config.Paused, SideBarState.RightTab);
@@ -77,13 +82,13 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       // Birth setting buttons
       for (int i = 0; i < 9; i++)
       {
-        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
+        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (20 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
 
       }
       // Death setting buttons
       for (int i = 0; i < 9; i++)
       {
-        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
+        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (20 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
       }
 
       foreach (var r in birth.Concat(death))
@@ -95,23 +100,25 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       rightTabStrings.Add(new DrawableString("Pause", pausebtn.Location + pausebtn.Size / 2 - size / 2, Color.White));
       size = DrawableString.Measure("Leeren");
       rightTabStrings.Add(new DrawableString("Leeren", clearbtn.Location + clearbtn.Size / 2 - size / 2, Color.White));
-      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.2 * Width, 0) + 20 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.7 * Width, 0) + 20 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.235 * Width, 0) + 17 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.705 * Width, 0) + 17 * offset, Color.White));
       size = DrawableString.Measure("Beenden");
       rightTabStrings.Add(new DrawableString("Beenden", closebtn.Location + closebtn.Size / 2 - size / 2, Color.White));
-      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 0.2f * Config.Height + colorSize / 2f -offset.Y), Color.White));
+      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 0.2f * Config.Height + colorSize / 2f - offset.Y), Color.White));
       for (int i = 0; i < 9; i++)
       {
-        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.025 * Width, 0) + (23 + 3 * i) * offset, Color.White));
+        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.10 * Width, 0) + (20 + 3 * i) * offset, Color.White));
       }
       rightTabStrings.Add(minimizeString);
+      leftTabStrings.Add(minimizeString);
 
       rightTabStrings.Add(rightTabString);
       leftTabStrings.Add(rightTabString);
 
       rightTabStrings.Add(leftTabString);
       leftTabStrings.Add(leftTabString);
-      
+
+      pm = new PatternManager(0, (int)(0.074 * Config.Height), Width, Config.Height - 2 * (int)(0.074 * Config.Height), this); //oberen und unteren button abziehen ....
     }
 
     private void OnBirthChanged(object sender)
@@ -154,6 +161,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       {
         sb.Draw(leftTab);
         sb.DrawString(leftTabStrings);
+        pm.Draw(sb);
       }
       else if (State == SideBarState.RightTab)
       {
