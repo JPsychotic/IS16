@@ -12,11 +12,9 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     string BasePath = @".\Content\Muster\";
     List<Pattern> patterns = new List<Pattern>();
     List<Pattern> currentPatterns = new List<Pattern>();
-
     Vector2 Position, Size;
     DrawableString PageText, leftText, rightText;
     Rectangle2D left, right;
-
     Vector2 PatternSize;
     int PatternMarginX = 20;
     int PatternMarginY = 50;
@@ -70,7 +68,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
       Page += pageDiff;
       Page = Page < 0 ? 0 : Page > (int)(possiblePatterns.Count / 8f) ? (int)(possiblePatterns.Count / 8f) : Page;
-      
+
       currentPatterns.Clear();
       for (int i = 0; i + Page * 8 < possiblePatterns.Count && i < 8; i++)
       {
@@ -82,9 +80,8 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       }
       PageText.Dispose();
 
-      var pageStrSize = DrawableString.Measure(Page.ToString());
-      PageText = new DrawableString((1+ Page) + "/" + (int)(possiblePatterns.Count / 8f + 1), new Vector2(Size.X * 0.25f - pageStrSize.X / 2, Position.Y + Size.Y - Size.Y * 0.07f), Color.White);
-
+      var pageStrSize = DrawableString.Measure(Page.ToString(), 4);
+      PageText = new DrawableString((1 + Page) + "/" + (int)(possiblePatterns.Count / 8f + 1), new Vector2(Size.X * 0.2f - pageStrSize.X / 2, left.Location.Y + left.Size.Y / 2 - pageStrSize.Y * 0.5f), Color.White, 4);
     }
 
     public void Draw(SpriteBatch sb)
@@ -95,6 +92,16 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       sb.DrawString(PageText);
       sb.DrawString(leftText);
       sb.DrawString(rightText);
+    }
+
+    public void Dispose()
+    {
+      foreach (var p in patterns) p.Dispose();
+      left.Dispose();
+      right.Dispose();
+      PageText.Dispose();
+      leftText.Dispose();
+      rightText.Dispose();
     }
   }
 }

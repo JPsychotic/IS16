@@ -6,13 +6,13 @@ using System.Drawing;
 
 namespace GameOfLife.RenderEngine.UI.Sidebar
 {
-  class Pattern
+  internal class Pattern
   {
-    Texture2D Texture;
-    Rectangle2D rect;
-    DrawableString NameString;
+    private Texture2D Texture;
+    private Rectangle2D rect;
+    private DrawableString NameString;
     public string Path, World, Name;
-    int SizeX, SizeY, MaxX, MaxY;
+    private int SizeX, SizeY, MaxX, MaxY;
 
     public Pattern(Vector2 loc, int MaxsizeX, int MaxsizeY, string path, string world, string name)
     {
@@ -59,7 +59,6 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public void Update()
     {
 
-
     }
 
     public void Draw(SpriteBatch sb)
@@ -70,7 +69,9 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     public void Dispose()
     {
-
+      Texture.Dispose();
+      NameString.Dispose();
+      rect.Dispose();
     }
   }
 }

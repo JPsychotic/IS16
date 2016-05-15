@@ -8,7 +8,6 @@ using SlimDX;
 
 namespace GameOfLife.RenderEngine.UI
 {
-
   class Userinterface
   {
     int frames, Second, thick = Config.LineThickness;
@@ -76,7 +75,6 @@ namespace GameOfLife.RenderEngine.UI
       if (a.Button != MouseButtons.Left || a.Button == MouseButtons.None) return false;
       return sideBar.HandleMouseMove(a.Location);
     }
-
 
     internal void Dispose()
     {

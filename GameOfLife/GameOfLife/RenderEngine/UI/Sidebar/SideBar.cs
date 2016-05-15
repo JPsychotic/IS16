@@ -17,7 +17,6 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public int MinimizedWidth = 20;
     public SideBarState State = SideBarState.Minimized;
     readonly Vector2 offset = new Vector2(0, (int)(0.0185 * Config.Height));
-    readonly Color activeTabColor = Color.FromArgb(0, 0, 0, 0);
 
     List<IDrawable2DElement> sideBarBackground = new List<IDrawable2DElement>();
     List<IDrawable2DElement> leftTab = new List<IDrawable2DElement>();
@@ -168,8 +167,6 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
         sb.Draw(rightTab);
         sb.DrawString(rightTabStrings);
       }
-
-
     }
 
     public bool IsPointInsideSidebar(Point loc)
@@ -196,7 +193,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     {
       maximize?.Dispose();
       maximizeString?.Dispose();
-
+      pm.Dispose();
       foreach (var r in sideBarBackground) r.Dispose();
       foreach (var s in rightTabStrings) s.Dispose();
       foreach (var s in leftTabStrings) s.Dispose();

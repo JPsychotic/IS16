@@ -26,7 +26,6 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
     {
       texture = tex;
       texView = new ShaderResourceView(RenderFrame.Instance.device, tex);
-
       Update();
     }
 
@@ -119,7 +118,9 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
     
     public void Dispose()
     {
-      //mesh.Dispose();
+      mesh.Dispose();
+      Cbuffer.Dispose();
+      texView?.Dispose();
     }
   }
 }
