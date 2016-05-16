@@ -21,6 +21,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     int Page = 0;
     string currentRules;
     List<Rectangle2D> patternToPlace = new List<Rectangle2D>();
+    List<Rectangle2D> patternToDraw = new List<Rectangle2D>();
 
     public PatternManager(int x, int y, int width, int heigth, SideBar sb)
     {
@@ -87,6 +88,8 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public void Draw(SpriteBatch sb)
     {
       foreach (var p in currentPatterns) p.Draw(sb);
+      foreach (var p in patternToPlace) sb.Draw(p);
+
       sb.Draw(left);
       sb.Draw(right);
       sb.DrawString(PageText);
@@ -106,15 +109,58 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     public bool Contains(Point loc)
     {
-      foreach(var p in patternToPlace) if(p.BoundingBox.Contains(loc)) return true;
+      foreach (var p in patternToPlace) if (p.BoundingBox.Contains(loc)) return true;
       return false;
     }
 
+    Point oldmouseLoc = new Point();
+    Point startMouseLoc = new Point();
     public void HandleMouseMove(Point loc)
     {
-      
+      var old = oldmouseLoc;
+      oldmouseLoc = loc;
+      foreach (var p in patternToPlace)
+      {
+        if (p.BoundingBox.Contains(old))
+        {
+          p.SetPosition((int)p.Location.X + loc.X - old.X, (int)p.Location.Y + loc.Y - old.Y);
+          return;
+        }
+      }
+      foreach (var p in currentPatterns)
+      {
+        if (p.rect.BoundingBox.Contains(old))
+        {
+          patternToPlace.Add(new Rectangle2D(loc.X, loc.Y, p.Texture.Description.Width, p.Texture.Description.Height, p.Texture));
+        }
+      }
+    }
 
+    public void HandleMouseDown(Point loc)
+    {
+      oldmouseLoc = loc;
+      startMouseLoc = loc;
+    }
 
+    public void HandleMouseClick(Point loc, Color4 col)
+    {
+      if (loc != startMouseLoc) return;
+      foreach (var p in patternToPlace)
+      {
+        if (p.BoundingBox.Contains(loc))
+        {
+          var sb = RenderFrame.Instance.spriteBatch;
+          var rt = RenderFrame.Instance.gol.OffscreenRenderTarget;
+          p.Color = col;
+
+          sb.Begin(rt);
+          sb.Draw(p);
+          sb.End();
+
+          patternToPlace.Remove(p);
+          return;
+        }
+      }
     }
   }
 }

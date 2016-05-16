@@ -130,7 +130,10 @@
     <Content Include="Content\font.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Muster\23,3\OTH-AW.png">
+    <Content Include="Content\Muster\23,3\Gun.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Muster\23,3\OTHAW.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Muster\23,3\Raumschiff.png">

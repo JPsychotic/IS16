@@ -33,14 +33,14 @@ namespace GameOfLife
     public DepthStencilView renderTargetDepthStencil;
     Texture2D DepthBuffer, swapchainresource;
     InputLayout layout;
-    readonly GameOfLifeCalculator gol;
+    internal GameOfLifeCalculator gol;
     readonly Userinterface UI;
     TextureInput inputHandler;
 
     Texture2DDescription ShaderInputTexDescription;
     Texture2D SzeneTexture;
     ShaderResourceView SzeneShaderRessource;
-    SpriteBatch sb;
+    internal SpriteBatch spriteBatch;
 
     public List<Finger> CurrentFingerCoordinates = new List<Finger>();
 
@@ -68,7 +68,7 @@ namespace GameOfLife
       SetContextStates();
       OverrideEvents();
 
-      sb = new SpriteBatch();
+      spriteBatch = new SpriteBatch();
       inputHandler = new TextureInput(device);
       gol = new GameOfLifeCalculator();
       QueryPerformanceFrequency(out freq);
@@ -94,7 +94,11 @@ namespace GameOfLife
 
     private void OnMouseDown(object sender, MouseEventArgs e)
     {
-      if (UI.IsPointInUI(e.Location)) MouseOnSideBar = true;
+      if (UI.IsPointInUI(e.Location))
+      {
+        UI.OnMouseDown(sender, e);
+        MouseOnSideBar = true;
+      }
       else inputHandler.RegisterMouseDown(sender, e);
     }
 
@@ -122,6 +126,8 @@ namespace GameOfLife
     {
       if (CurrentFingerCoordinates.Count == 0 && !MouseOnSideBar)
         inputHandler.RegisterInput(sender, e);
+      else
+        UI.OnMouseMove(sender, e);
     }
 
     private void RenderForm_MouseWheel(object sender, MouseEventArgs e)
@@ -155,9 +161,9 @@ namespace GameOfLife
 
       gol.Draw(MainRenderTarget);
 
-      sb.Begin(MainRenderTarget);
-      UI.Draw(sb);
-      sb.End();
+      spriteBatch.Begin(MainRenderTarget);
+      UI.Draw(spriteBatch);
+      spriteBatch.End();
 
       swapChain.Present(Config.Vsync, PresentFlags.None);
       Thread.Sleep(Config.Delay);
@@ -319,7 +325,7 @@ namespace GameOfLife
     public void Exit()
     {
       swapchainresource.Dispose();
-      sb?.Dispose();
+      spriteBatch?.Dispose();
       SzeneTexture?.Dispose();
       SzeneShaderRessource?.Dispose();
       gol?.Dispose();

@@ -22,7 +22,7 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
         : this(x, y, (int)size.X, (int)size.Y, col)
     { }
 
-    public Rect2D(int x, int y, int sizeX, int sizeY, Texture2D tex) : this(x, y, sizeX, sizeY, new Color4(1, 1, 0, 0))
+    public Rect2D(int x, int y, int sizeX, int sizeY, Texture2D tex) : this(x, y, sizeX, sizeY, new Color4(1, 1, 1, 1))
     {
       texture = tex;
       texView = new ShaderResourceView(RenderFrame.Instance.device, tex);
@@ -115,10 +115,9 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
       SizeY = -sizeY;
       Update();
     }
-    
+
     public void Dispose()
     {
-      mesh.Dispose();
       Cbuffer.Dispose();
       texView?.Dispose();
     }

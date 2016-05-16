@@ -38,16 +38,16 @@ float4 PS(PS_IN input) : SV_Target
 	// EMD
 	// FGH
 
-	float4 pixelab = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x / 2, -FrameInfo.y));
-	float4 pixelcd = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y / 2));
-	float4 pixelef = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y / 2));
-	float4 pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y));
+	float3 pixelab = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x / 2, -FrameInfo.y)).rgb;
+	float3 pixelcd = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y / 2)).rgb;
+	float3 pixelef = golTex.Sample(LinearSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y / 2)).rgb;
+	float3 pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y)).rgb;
 
 	float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
 	float4 random = randomTex.Sample(PointSampler, input.tex + FrameInfo.zw);
-	float4 sum = pixelab + pixelcd + pixelef + pixelgh;
+	float3 sum = pixelab + pixelcd + pixelef + pixelgh;
 	
-	sum = mad(sum, 2, random / 4);
+	sum = mad(sum, 2, random / 10);
 
 	const float4 dead = float4(0, 0, 0, 1);
 	float4 alive = float4(floor(saturate(sum.rgb - max(sum.r, max(sum.g, sum.b)) + 1)), 1);

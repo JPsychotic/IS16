@@ -168,9 +168,19 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       }
     }
 
+    internal bool OnMouseDown(Point loc)
+    {
+      if (State == SideBarState.LeftTab)
+      {
+        pm.HandleMouseDown(loc);
+        return true;
+      }
+      return false;
+    }
+
     internal bool IsPointOnUI(Point loc)
     {
-      return ((loc.X <= Width && State != SideBarState.Minimized) || 
+      return ((loc.X <= Width && State != SideBarState.Minimized) ||
         (loc.X <= MinimizedWidth && State == SideBarState.Minimized))
         || pm.Contains(loc);
     }
@@ -183,6 +193,11 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     public bool HandleMouseClick(Point loc)
     {
+      if(pm.Contains(loc))
+      {
+        pm.HandleMouseClick(loc, inputHandler.SelectedColor);
+        return true;
+      }
       if (IsPointOnUI(loc))
       {
         GotInputClick?.Invoke(loc, State);

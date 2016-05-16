@@ -64,6 +64,12 @@ namespace GameOfLife.RenderEngine.UI
       }
     }
 
+    public bool OnMouseDown(object sender, MouseEventArgs a)
+    {
+      if (a.Button != MouseButtons.Left || a.Button == MouseButtons.None) return false;
+      return sideBar.OnMouseDown(a.Location);
+    }
+
     public bool OnMouseClick(object sender, MouseEventArgs a)
     {
       if (a.Button != MouseButtons.Left || a.Button == MouseButtons.None) return false;

@@ -34,6 +34,5 @@ PS_IN VS(VS_IN input)
 float4 PS(PS_IN input) : SV_Target
 {
 	if (RectTex.y < 1) return RectColor;
-	float4 col = float4(tex.Sample(PointSampler, input.tex.xy).rgb,1);
-	return col;
+	return float4(tex.Sample(PointSampler, input.tex.xy).rgb, 1) * RectColor;
 }
