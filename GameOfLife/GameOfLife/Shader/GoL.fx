@@ -2,10 +2,11 @@
 SamplerState PointSampler : register(s1);
 
 const Texture2D golTex : register(t0);
+const Texture2D randomTex : register(t1);
 
 cbuffer frameInput : register(b2)
 {
-	const float4 FrameInfo; // abstand pixel X, abstand pixel Y, nix, nix
+	const float4 FrameInfo; // abstand pixel X, abstand pixel Y, random, random
 	const float4 Rules; //  regeln geburt, regeln tod, nix, nix
 }
 
@@ -33,7 +34,6 @@ PS_IN VS(float4 position : POSITION)
 
 float4 PS(PS_IN input) : SV_Target
 {
-	const float4 dead = float4(0, 0, 0, 1);
 	// ABC
 	// EMD
 	// FGH
@@ -44,51 +44,18 @@ float4 PS(PS_IN input) : SV_Target
 	float4 pixelgh = golTex.Sample(LinearSampler, input.tex + float2(FrameInfo.x / 2, FrameInfo.y));
 
 	float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
-	float4 alive = pixelCenter;
+	float4 random = randomTex.Sample(PointSampler, input.tex + FrameInfo.zw);
 	float4 sum = pixelab + pixelcd + pixelef + pixelgh;
 
-	sum *= 2;
+	sum = mad(sum, 2, random / 4);
 
-	if(sum.r >= sum.g && sum.r >= sum.b)
-		alive = float4(1, 0, 0, 1);
-	else if(sum.g >= sum.r && sum.g >= sum.b)
-		alive = float4(0, 1, 0, 1);
-	else if(sum.b >= sum.r && sum.b >= sum.g)
-		alive = float4(0, 0, 1, 1);
-
-	uint index = round(sum.r + sum.g + sum.b);
+	const float4 dead = float4(0, 0, 0, 1);
+	float4 alive = float4(floor(saturate(sum.rgb - max(sum.r, max(sum.g, sum.b)) + 1)), 1);
+	
+	uint index = floor(sum.r + sum.g + sum.b);
 	if ((asuint(Rules.x) >> index) & 1 > 0) return alive;
 	if ((asuint(Rules.y) >> index) & 1 > 0) return dead;
 	if(pixelCenter.r == 0 && pixelCenter.g == 0 && pixelCenter.b == 0)
 		return pixelCenter;
 	return alive;
 }
-
-//float4 pixelOL = golTex.Sample(PointSampler, input.tex - FrameInfo.xy);
-//float4 pixelOM = golTex.Sample(PointSampler, input.tex + float2(0, -FrameInfo.y));
-//float4 pixelOR = golTex.Sample(PointSampler, input.tex + float2(FrameInfo.x, -FrameInfo.y));
-//
-//float4 pixelML = golTex.Sample(PointSampler, input.tex + float2(-FrameInfo.x, 0));
-//float4 pixelCenter = golTex.Sample(PointSampler, input.tex);
-//float4 pixelMR = golTex.Sample(PointSampler, input.tex + float2(FrameInfo.x, 0));
-//
-//float4 pixelUL = golTex.Sample(PointSampler, input.tex + float2(-FrameInfo.x, FrameInfo.y));
-//float4 pixelUM = golTex.Sample(PointSampler, input.tex + float2(0, FrameInfo.y));
-//float4 pixelUR = golTex.Sample(PointSampler, input.tex + FrameInfo.xy);
-//
-//float sum = pixelOL.x + pixelOM.x + pixelOR.x + pixelML.x + pixelMR.x + pixelUL.x + pixelUM.x + pixelUR.x;
-//if (pixelCenter.x < 0.5f)
-//{
-//	//cell is dead
-//	if (sum < 3.5f && sum > 2.5f)
-//	{
-//		return alive;
-//	}
-//}
-//else
-//{
-//	//cell is alive
-//	if (sum < 2) return dead;
-//	if (sum > 3) return dead;
-//}
-//return pixelCenter;

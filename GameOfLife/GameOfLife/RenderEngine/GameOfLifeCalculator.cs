@@ -1,7 +1,9 @@
-﻿using SlimDX.Direct3D11;
+﻿using System;
+using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using GameOfLife.Storage;
 using SlimDX;
+using Buffer = SlimDX.Direct3D11.Buffer;
 
 namespace GameOfLife.RenderEngine
 {
@@ -13,8 +15,8 @@ namespace GameOfLife.RenderEngine
     readonly VertexShader GoLVS;
     readonly PixelShader GoLPS;
     readonly Mesh quad;
-
     readonly Buffer CBuffer;
+    Random rnd = new Random();
 
     public GameOfLifeCalculator()
     {
@@ -56,7 +58,7 @@ namespace GameOfLife.RenderEngine
       {
         DataBox databoxPS = c.MapSubresource(CBuffer, 0, MapMode.WriteDiscard, 0);
         databoxPS.Data.Position = 0;
-        databoxPS.Data.Write(new Vector4(1 / (float)Config.Width, 1 / (float)Config.Height, 0, 0));
+        databoxPS.Data.Write(new Vector4(1 / (float)Config.Width, 1 / (float)Config.Height, (float)rnd.NextDouble(), (float)rnd.NextDouble()));
         databoxPS.Data.Write(Config.BirthRule);
         databoxPS.Data.Write(Config.DeathRule);
         databoxPS.Data.Write<uint>(0);
