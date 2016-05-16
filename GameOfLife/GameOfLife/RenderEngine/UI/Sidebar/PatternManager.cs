@@ -20,6 +20,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     int PatternMarginY = 50;
     int Page = 0;
     string currentRules;
+    List<Rectangle2D> patternToPlace = new List<Rectangle2D>();
 
     public PatternManager(int x, int y, int width, int heigth, SideBar sb)
     {
@@ -36,7 +37,6 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
           patterns.Add(new Pattern(new Vector2(0, Position.Y * 1.5f), (int)PatternSize.X, (int)PatternSize.Y, file, world, name));
         }
       }
-      string r = Config.GetRuleAsString();
       PageText = new DrawableString("Welt: " + currentRules, new Vector2(Size.X * 0.1f, Position.Y + Size.Y - Size.Y * 0.075f), Color.White);
 
       Config.RulesChanged += Config_RulesChanged;
@@ -102,6 +102,19 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       PageText.Dispose();
       leftText.Dispose();
       rightText.Dispose();
+    }
+
+    public bool Contains(Point loc)
+    {
+      foreach(var p in patternToPlace) if(p.BoundingBox.Contains(loc)) return true;
+      return false;
+    }
+
+    public void HandleMouseMove(Point loc)
+    {
+      
+
+
     }
   }
 }

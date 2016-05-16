@@ -86,7 +86,7 @@ namespace GameOfLife.RenderEngine.UI
 
     internal bool IsPointInUI(Point location)
     {
-      return sideBar.IsPointInsideSidebar(location);
+      return sideBar.IsPointOnUI(location);
     }
   }
 }

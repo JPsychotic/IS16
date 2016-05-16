@@ -142,7 +142,9 @@
     <Content Include="Content\Muster\23,3\Gleiter.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Noise.png" />
+    <Content Include="Content\Noise.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Shader\GoL.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

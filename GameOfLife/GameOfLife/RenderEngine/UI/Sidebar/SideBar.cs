@@ -34,7 +34,6 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     List<Rectangle2D> birth = new List<Rectangle2D>();
     List<Rectangle2D> death = new List<Rectangle2D>();
 
-
     public SideBar(TextureInput iHandler)
     {
       inputHandler = iHandler;
@@ -169,19 +168,22 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       }
     }
 
-    public bool IsPointInsideSidebar(Point loc)
+    internal bool IsPointOnUI(Point loc)
     {
-      return ((loc.X <= Width && State != SideBarState.Minimized) || (loc.X <= MinimizedWidth && State == SideBarState.Minimized));
+      return ((loc.X <= Width && State != SideBarState.Minimized) || 
+        (loc.X <= MinimizedWidth && State == SideBarState.Minimized))
+        || pm.Contains(loc);
     }
 
     public bool HandleMouseMove(Point loc)
     {
-      return IsPointInsideSidebar(loc);
+      pm.HandleMouseMove(loc);
+      return IsPointOnUI(loc);
     }
 
     public bool HandleMouseClick(Point loc)
     {
-      if (IsPointInsideSidebar(loc))
+      if (IsPointOnUI(loc))
       {
         GotInputClick?.Invoke(loc, State);
         return true;

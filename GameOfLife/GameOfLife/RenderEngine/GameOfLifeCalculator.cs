@@ -9,8 +9,8 @@ namespace GameOfLife.RenderEngine
 {
   class GameOfLifeCalculator
   {
-    readonly Texture2D ScreenBufferShaderResourceTexture, OffscreenRenderTargetTexture;
-    public readonly ShaderResourceView ScreenBufferShaderResource;
+    readonly Texture2D ScreenBufferShaderResourceTexture, OffscreenRenderTargetTexture, randomTex;
+    public readonly ShaderResourceView ScreenBufferShaderResource, randomTexView;
     public readonly RenderTargetView OffscreenRenderTarget;
     readonly VertexShader GoLVS;
     readonly PixelShader GoLPS;
@@ -37,6 +37,9 @@ namespace GameOfLife.RenderEngine
 
       ScreenBufferShaderResourceTexture = new Texture2D(d, ShaderInputTexDescription);
       ScreenBufferShaderResource = new ShaderResourceView(d, ScreenBufferShaderResourceTexture);
+
+      randomTex = Texture2D.FromFile(d, @".\Content\Noise.png");
+      randomTexView = new ShaderResourceView(d, randomTex);
 
       ShaderInputTexDescription.BindFlags = BindFlags.RenderTarget;
       OffscreenRenderTargetTexture = new Texture2D(d, ShaderInputTexDescription);
@@ -73,6 +76,7 @@ namespace GameOfLife.RenderEngine
         c.PixelShader.SetSampler(SamplerStates.Instance.PointSampler, 1);
         c.OutputMerger.SetTargets(OffscreenRenderTarget);
         c.PixelShader.SetShaderResource(ScreenBufferShaderResource, 0);
+        c.PixelShader.SetShaderResource(randomTexView, 1);
         c.PixelShader.SetConstantBuffer(CBuffer, 2);
 
         quad.Render();

@@ -9,7 +9,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
   internal class Pattern
   {
     private Texture2D Texture;
-    private Rectangle2D rect;
+    public Rectangle2D rect;
     private DrawableString NameString;
     public string Path, World, Name;
     private int SizeX, SizeY, MaxX, MaxY;
