@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 using GameOfLife.RenderEngine.UI.Elements;
 using GameOfLife.Storage;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace GameOfLife.RenderEngine.UI.Sidebar
 {
@@ -17,6 +21,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public int MinimizedWidth = 20;
     public SideBarState State = SideBarState.Minimized;
     readonly Vector2 offset = new Vector2(0, (int)(0.0185 * Config.Height));
+    Texture2D screenshotTex, fileLoadTex;
 
     List<IDrawable2DElement> sideBarBackground = new List<IDrawable2DElement>();
     List<IDrawable2DElement> leftTab = new List<IDrawable2DElement>();
@@ -37,6 +42,10 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public SideBar(TextureInput iHandler)
     {
       inputHandler = iHandler;
+
+      var d = RenderFrame.Instance.device;
+      screenshotTex = Texture2D.FromFile(d, @".\Content\floppy_save.png");
+      fileLoadTex = Texture2D.FromFile(d, @".\Content\file_open.png");
 
       // hintergrund
       sideBarBackground.Add(new Rectangle2D(new Vector2(0, 0), Width, Config.Height, Color.FromArgb(200, 200, 200, 200)));
@@ -67,26 +76,34 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       GotInputClick += closebtn.HandleInput;
 
       //Farben
-      int colorSize = (int)(0.09 * Config.Height);
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.1875 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
+      int colorSize = (int)(0.07 * Config.Height);
+      rightTab.Add(new Rectangle2D(new Vector2(0.1875f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.375 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.375f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.5625 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.5625f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2((float)0.75 * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.75f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
+      GotInputClick += rightTab.Last().HandleInput;
+
+      rightTab.Add(new Rectangle2D(new Vector2(0.1875f * Width, 0.28f * Config.Height), (int)(0.32f * Width), (int)(colorSize / 1.0f), Color.Black, (s) => MakeScreenshot(), SideBarState.RightTab));
+      GotInputClick += rightTab.Last().HandleInput;
+      rightTab.Add(new Rectangle2D(new Vector2(0.5625f * Width, 0.28f * Config.Height), (int)(0.32f * Width), (int)(colorSize / 1.0f), Color.Black, (s) => LoadFile(), SideBarState.RightTab));
+      GotInputClick += rightTab.Last().HandleInput;
+      rightTab.Add(new Rectangle2D(new Vector2(0.28f * Width, 0.28f * Config.Height), colorSize, colorSize, Color.White, screenshotTex));
+      GotInputClick += rightTab.Last().HandleInput;
+      rightTab.Add(new Rectangle2D(new Vector2(0.655f * Width, 0.28f * Config.Height), colorSize, colorSize, Color.White, fileLoadTex));
       GotInputClick += rightTab.Last().HandleInput;
 
       // Birth setting buttons
       for (int i = 0; i < 9; i++)
       {
-        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (20 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
-
+        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
       }
       // Death setting buttons
       for (int i = 0; i < 9; i++)
       {
-        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (20 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
+        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
       }
 
       foreach (var r in birth.Concat(death))
@@ -98,14 +115,14 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       rightTabStrings.Add(new DrawableString("Pause", pausebtn.Location + pausebtn.Size / 2 - size / 2, Color.White));
       size = DrawableString.Measure("Leeren");
       rightTabStrings.Add(new DrawableString("Leeren", clearbtn.Location + clearbtn.Size / 2 - size / 2, Color.White));
-      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.235 * Width, 0) + 17 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.705 * Width, 0) + 17 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.235 * Width, 0) + 20 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.705 * Width, 0) + 20 * offset, Color.White));
       size = DrawableString.Measure("Beenden");
       rightTabStrings.Add(new DrawableString("Beenden", closebtn.Location + closebtn.Size / 2 - size / 2, Color.White));
       rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 0.2f * Config.Height + colorSize / 2f - offset.Y), Color.White));
       for (int i = 0; i < 9; i++)
       {
-        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.10 * Width, 0) + (20 + 3 * i) * offset, Color.White));
+        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.10 * Width, 0) + (23 + 3 * i) * offset, Color.White));
       }
       rightTabStrings.Add(minimizeString);
       leftTabStrings.Add(minimizeString);
@@ -193,7 +210,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     public bool HandleMouseClick(Point loc)
     {
-      if(pm.Contains(loc))
+      if (pm.Contains(loc))
       {
         pm.HandleMouseClick(loc, inputHandler.SelectedColor);
         return true;
@@ -204,6 +221,49 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
         return true;
       }
       return false;
+    }
+
+    public void MakeScreenshot()
+    {
+      try
+      {
+        var folder = "Screenshots";
+        Directory.CreateDirectory(folder);
+        var filename = Path.Combine(folder, $@"Rule_{Config.GetRuleAsString().Replace('/', ',')}_{DateTime.Now:dd.MM.yy_HH.mm.ss}.png");
+        RenderFrame.Instance.gol.MakeScreenshot(filename);
+      }
+      catch { }
+    }
+
+    string path = null;
+    public void LoadFile()
+    {
+      try
+      {
+        var thread = new Thread(loadFile);
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
+        thread.Join();
+        if (path == null) return;
+
+        var d = RenderFrame.Instance.device;
+        var tex = Texture2D.FromFile(d, path);
+        RenderFrame.Instance.gol.LoadTexture(tex);
+        tex.Dispose();
+      }
+      catch { }
+    }
+
+    private void loadFile()
+    {
+      try
+      {
+        var fod = new OpenFileDialog();
+        var result = fod.ShowDialog();
+        if (result != DialogResult.OK) { path = null; return; };
+        path = fod.FileName;
+      }
+      catch { path = null; }
     }
 
     internal void Dispose()

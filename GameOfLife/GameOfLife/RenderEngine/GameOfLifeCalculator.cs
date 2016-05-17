@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Runtime.Remoting.Contexts;
+using GameOfLife.RenderEngine.UI.Elements;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using GameOfLife.Storage;
@@ -44,6 +49,7 @@ namespace GameOfLife.RenderEngine
       ShaderInputTexDescription.BindFlags = BindFlags.RenderTarget;
       OffscreenRenderTargetTexture = new Texture2D(d, ShaderInputTexDescription);
       OffscreenRenderTarget = new RenderTargetView(d, OffscreenRenderTargetTexture);
+      d.ImmediateContext.ClearRenderTargetView(OffscreenRenderTarget, Color.Black);
 
       GoLPS = ShaderProvider.CompilePS("./Shader/GoL.fx");
       GoLVS = ShaderProvider.CompileVS("./Shader/GoL.fx");
@@ -51,7 +57,6 @@ namespace GameOfLife.RenderEngine
       CBuffer = new Buffer(d, Vector4.SizeInBytes * 2, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
 
       quad = Mesh.ScreenQuad();
-
     }
 
     internal void Draw(RenderTargetView mainRendertarget)
@@ -67,7 +72,7 @@ namespace GameOfLife.RenderEngine
         databoxPS.Data.Write<uint>(0);
         databoxPS.Data.Write<uint>(0);
         c.UnmapSubresource(CBuffer, 0);
-
+        
         c.CopyResource(OffscreenRenderTarget.Resource, ScreenBufferShaderResource.Resource);
 
         c.VertexShader.Set(GoLVS);
@@ -94,6 +99,25 @@ namespace GameOfLife.RenderEngine
       GoLVS.Dispose();
       GoLPS.Dispose();
       quad.Dispose();
+    }
+
+    internal void MakeScreenshot(string filename)
+    {
+      try
+      {
+        Texture2D.ToFile(RenderFrame.Instance.deviceContext, OffscreenRenderTargetTexture, ImageFileFormat.Png, filename);
+      }
+      catch { }
+    }
+    
+    public void LoadTexture(Texture2D tex)
+    {
+      var sb = RenderFrame.Instance.spriteBatch;
+      var rect = new Rectangle2D(new Vector2(), Config.Width, Config.Height, tex);
+      sb.Begin(OffscreenRenderTarget);
+      sb.Draw(rect);
+      sb.End();
+      rect.Dispose();
     }
   }
 }

@@ -19,7 +19,6 @@ namespace GameOfLife.RenderEngine
                 Filter = Filter.MinMagMipLinear,
                 MinimumLod = 0,
                 MaximumLod = 0
-                
             };
 
             LinSampler = SamplerState.FromDescription(RenderFrame.Instance.device, samplerDesc);

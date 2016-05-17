@@ -126,7 +126,7 @@ namespace GameOfLife
     {
       if (CurrentFingerCoordinates.Count == 0 && !MouseOnSideBar)
         inputHandler.RegisterInput(sender, e);
-      else
+      else if (MouseOnSideBar)
         UI.OnMouseMove(sender, e);
     }
 

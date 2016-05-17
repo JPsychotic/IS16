@@ -21,27 +21,27 @@ namespace GameOfLife.RenderEngine.UI.Elements
       rect = new Rect2D(x, y, sizeX, sizeY, col);
     }
 
-    public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Color4 col)
+    public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Color4 col, Texture2D tex = null)
     {
-      rect = new Rect2D((int)pos.X, (int)pos.Y, sizeX, sizeY, col);
+      rect = new Rect2D((int)pos.X, (int)pos.Y, sizeX, sizeY, col, tex);
     }
 
-    public Rectangle2D(int x, int y, int sizeX, int sizeY, Texture2D tex)
+    public Rectangle2D(int x, int y, int sizeX, int sizeY, Texture2D tex = null)
     {
       rect = new Rect2D(x, y, sizeX, sizeY, tex);
     }
 
-    public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Texture2D tex)
+    public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Texture2D tex = null)
     {
       rect = new Rect2D((int)pos.X, (int)pos.Y, sizeX, sizeY, tex);
     }
 
-    public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Color4 col, Action<object> act, SideBarState state, object data = null) : this(pos, sizeX, sizeY, col)
+    public Rectangle2D(Vector2 pos, int sizeX, int sizeY, Color4 col, Action<object> act, SideBarState state, object data = null, Texture2D tex = null) : this(pos, sizeX, sizeY, col, tex)
     {
       Data = data;
       GotInput += s => { if (state.HasFlag(s)) act(this); };
     }
-
+    
     public Vector2 Location => new Vector2(rect.BoundingBox.Location.X, rect.BoundingBox.Location.Y);
     public Vector2 Size => new Vector2(rect.BoundingBox.Size.Width, rect.BoundingBox.Size.Height);
 

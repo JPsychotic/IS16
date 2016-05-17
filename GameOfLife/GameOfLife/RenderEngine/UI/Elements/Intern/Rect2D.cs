@@ -22,10 +22,8 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
         : this(x, y, (int)size.X, (int)size.Y, col)
     { }
 
-    public Rect2D(int x, int y, int sizeX, int sizeY, Texture2D tex) : this(x, y, sizeX, sizeY, new Color4(1, 1, 1, 1))
+    public Rect2D(int x, int y, int sizeX, int sizeY, Texture2D tex) : this(x, y, sizeX, sizeY, new Color4(1, 1, 1, 1), tex)
     {
-      texture = tex;
-      texView = new ShaderResourceView(RenderFrame.Instance.device, tex);
       Update();
     }
 
@@ -43,8 +41,14 @@ namespace GameOfLife.RenderEngine.UI.Elements.Intern
     internal ShaderResourceView texView;
     internal Buffer Cbuffer;
 
-    public Rect2D(int x, int y, int sizeX, int sizeY, Color4 col)
+    public Rect2D(int x, int y, int sizeX, int sizeY, Color4 col, Texture2D tex = null)
     {
+      if (tex != null)
+      {
+        texture = tex;
+        texView = new ShaderResourceView(RenderFrame.Instance.device, tex);
+      }
+
       X = x;
       Y = Config.Height - y; // nullpunkt muss korrigiert werden weil er bei DirectX unten links und nich oben links ist.
       SizeX = sizeX;
