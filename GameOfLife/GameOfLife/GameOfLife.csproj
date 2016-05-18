@@ -157,7 +157,11 @@
     <Content Include="Content\Muster\23,3\Breeder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+<<<<<<< HEAD
     <Content Include="Content\Muster\23,3\Cordership.png">
+=======
+    <Content Include="Content\Muster\23,3\Garten Eden.png">
+>>>>>>> origin/master
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Muster\23,3\Gun.png">
@@ -202,10 +206,20 @@
     <Content Include="Content\Muster\245,3\Qualle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+<<<<<<< HEAD
     <Content Include="Content\corner.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Muster\23,3\Tobi.png">
+=======
+    <Content Include="Content\Muster\35,3\Schwimmer 1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Muster\35,3\Schwimmer 2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Muster\35,3\Segler.png">
+>>>>>>> origin/master
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Noise.png">
