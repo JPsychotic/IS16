@@ -5,6 +5,7 @@ using GameOfLife.RenderEngine.UI.Elements;
 using GameOfLife.RenderEngine.UI.Sidebar;
 using GameOfLife.Storage;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace GameOfLife.RenderEngine.UI
 {
@@ -17,6 +18,9 @@ namespace GameOfLife.RenderEngine.UI
 
     DrawableString thickness, pause;
     DrawableString fpsString;
+    DrawableString stef, tobi, jerry;
+    Rectangle2D oth;
+    Texture2D othTex;
 
     SideBar sideBar;
 
@@ -28,6 +32,17 @@ namespace GameOfLife.RenderEngine.UI
       s = "Thickness: " + Config.LineThickness;
       thickness = new DrawableString(s, new Vector2(Config.Width - DrawableString.Measure(s).X - position.X, position.Y * 3), Color.White);
       sideBar = new SideBar(inputHandler);
+      s = "Stefan P" + (char)('o' + 42) + "lloth";
+      stef = new DrawableString(s, new Vector2(Config.Width - DrawableString.Measure(s, 1).X - position.X, Config.Height - position.Y * 4), Color.White, 1);
+      s = "Tobias Nickl";
+      tobi = new DrawableString(s, new Vector2(Config.Width - DrawableString.Measure(s, 1).X - position.X, Config.Height - position.Y * 3), Color.White, 1);
+      s = "Jeremy Probst";
+      jerry = new DrawableString(s, new Vector2(Config.Width - DrawableString.Measure(s, 1).X - position.X, Config.Height - position.Y * 2), Color.White, 1);
+
+      float scale = 1 / 12f;
+      othTex = Texture2D.FromFile(RenderFrame.Instance.device, @".\Content\oth.png");
+      oth = new Rectangle2D(new Vector2(Config.Width - Config.Width * scale * 1.2f - 10, stef.Location.Y - (int)(Config.Height * scale) - 10), (int)(Config.Width * scale * 1.2f), (int)(Config.Height * scale), othTex);
+      oth.Color = new Color4(0.4f, 1, 1, 1);
     }
 
     public void Update(float elapsed)
@@ -37,7 +52,7 @@ namespace GameOfLife.RenderEngine.UI
       {
         thickness.Dispose();
         string s = "Thickness: " + Config.LineThickness;
-        thickness = new DrawableString(s, new Vector2(Config.Width - DrawableString.Measure(s).X - position.X, position.Y *3), Color.White);
+        thickness = new DrawableString(s, new Vector2(Config.Width - DrawableString.Measure(s).X - position.X, position.Y * 3), Color.White);
         thick = Config.LineThickness;
       }
 
@@ -55,8 +70,12 @@ namespace GameOfLife.RenderEngine.UI
     public void Draw(SpriteBatch sb)
     {
       sideBar.Draw(sb);
+      sb.Draw(oth);
       sb.DrawString(thickness);
       sb.DrawString(fpsString);
+      sb.DrawString(stef);
+      sb.DrawString(tobi);
+      sb.DrawString(jerry);
 
       if (Config.Paused && timeElapsed % 1 > 0.5)
       {

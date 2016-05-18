@@ -13,7 +13,8 @@ namespace GameOfLife.Storage
 
     #region Public properties / Config settings
 
-    public static int LineThickness { get; set; } = 21;
+    static int thickness = 21;
+    public static int LineThickness { get { return thickness; } set { thickness = value; if (thickness < 1) thickness = 1; } }
     public static bool ShowFPS { get; set; }
     public static bool DisplayHelp { get; set; }
     public static int Delay = 8;

@@ -21,12 +21,12 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public int MinimizedWidth = 20;
     public SideBarState State = SideBarState.Minimized;
     readonly Vector2 offset = new Vector2(0, (int)(0.0185 * Config.Height));
-    Texture2D screenshotTex, fileLoadTex;
+    Texture2D screenshotTex, fileLoadTex, plusTex, minusTex, playTex, pauseTex, exitTex, clearTex, cornerTex;
 
     List<IDrawable2DElement> sideBarBackground = new List<IDrawable2DElement>();
     List<IDrawable2DElement> leftTab = new List<IDrawable2DElement>();
     List<IDrawable2DElement> rightTab = new List<IDrawable2DElement>();
-    Rectangle2D maximize;
+    Rectangle2D maximize, slider, sliderbackground;
 
     List<DrawableString> leftTabStrings = new List<DrawableString>();
     List<DrawableString> rightTabStrings = new List<DrawableString>();
@@ -38,6 +38,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     List<Rectangle2D> birth = new List<Rectangle2D>();
     List<Rectangle2D> death = new List<Rectangle2D>();
+    float speed = 0;
 
     public SideBar(TextureInput iHandler)
     {
@@ -46,6 +47,13 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       var d = RenderFrame.Instance.device;
       screenshotTex = Texture2D.FromFile(d, @".\Content\floppy_save.png");
       fileLoadTex = Texture2D.FromFile(d, @".\Content\file_open.png");
+      minusTex = Texture2D.FromFile(d, @".\Content\minus.png");
+      plusTex = Texture2D.FromFile(d, @".\Content\plus.png");
+
+      playTex = Texture2D.FromFile(d, @".\Content\playpause.png");
+      clearTex = Texture2D.FromFile(d, @".\Content\clear.png");
+      exitTex = Texture2D.FromFile(d, @".\Content\exit.png");
+      cornerTex = Texture2D.FromFile(d, @".\Content\corner.png");
 
       // hintergrund
       sideBarBackground.Add(new Rectangle2D(new Vector2(0, 0), Width, Config.Height, Color.FromArgb(200, 200, 200, 200)));
@@ -61,49 +69,53 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       GotInputClick += maximize.HandleInput;
 
       var leftTabString = new DrawableString("Muster", new Vector2((float)0.1625 * Width, 5) + offset, Color.White);
-      var rightTabString = new DrawableString("Einstellungen", new Vector2(Width / 2f + (float)0.0625 * Width, 5) + offset, Color.White);
+      var rightTabString = new DrawableString("Allgemein", new Vector2(Width / 2f + (float)0.11 * Width, 5) + offset, Color.White);
       var minimizeString = new DrawableString("Einklappen", new Vector2((float)0.35 * Width, Config.Height - (int)(0.05 * Config.Height)), Color.White);
       maximizeString = new DrawableString(">", new Vector2((float)0.0125 * Width, Config.Height / 2f), Color.White);
 
-      var pausebtn = new Rectangle2D(new Vector2((float)0.0625 * Width, (int)(0.093 * Config.Height)), (int)(0.25 * Width), (int)(0.074 * Config.Height), Color.DimGray, (s) => Config.Paused = !Config.Paused, SideBarState.RightTab);
-      rightTab.Add(pausebtn);
-      GotInputClick += pausebtn.HandleInput;
-      var clearbtn = new Rectangle2D(new Vector2((float)0.0625 * Width * 2 + (int)(0.25 * Width), (int)(0.093 * Config.Height)), (int)(0.25 * Width), (int)(0.074 * Config.Height), Color.DimGray, (s) => inputHandler.ClearWorld(), SideBarState.RightTab);
-      rightTab.Add(clearbtn);
-      GotInputClick += clearbtn.HandleInput;
-      var closebtn = new Rectangle2D(new Vector2((float)0.0625 * Width * 3 + (int)(0.25 * Width) * 2, (int)(0.093 * Config.Height)), (int)(0.25 * Width), (int)(0.074 * Config.Height), Color.DarkRed, (s) => RenderFrame.Instance.Exit(), SideBarState.RightTab);
+      int btnSize = (int)(0.04 * Config.Width);
+
+      var closebtn = new Rectangle2D(new Vector2(0.1875f * Width, 0.093f * Config.Height), btnSize, btnSize, Color.OrangeRed, (s) => RenderFrame.Instance.Exit(), SideBarState.RightTab, null, exitTex);
       rightTab.Add(closebtn);
       GotInputClick += closebtn.HandleInput;
+      var pausebtn = new Rectangle2D(new Vector2(0.5625f * Width, 0.093f * Config.Height), btnSize, btnSize, Color.White, (s) => { Config.Paused = !Config.Paused; }, SideBarState.RightTab, null, playTex);
+      rightTab.Add(pausebtn);
+      GotInputClick += pausebtn.HandleInput;
+      var clearbtn = new Rectangle2D(new Vector2(0.375f * Width, 0.093f * Config.Height), btnSize, btnSize, Color.White, (s) => inputHandler.ClearWorld(), SideBarState.RightTab, null, clearTex);
+      rightTab.Add(clearbtn);
+      GotInputClick += clearbtn.HandleInput;
+      rightTab.Add(new Rectangle2D(new Vector2(0.75f * Width, 0.093f * Config.Height), btnSize, btnSize, Color.White, (s) => SamplerStates.Instance.SwitchWrapMode(), SideBarState.RightTab, null, cornerTex));
+      GotInputClick += rightTab.Last().HandleInput;
+
 
       //Farben
-      int colorSize = (int)(0.07 * Config.Height);
-      rightTab.Add(new Rectangle2D(new Vector2(0.1875f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.1875f * Width, 0.27f * Config.Height), btnSize, btnSize, Color.Red, (s) => inputHandler.ChangeColor(new Color4(1, 1, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0.375f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.375f * Width, 0.27f * Config.Height), btnSize, btnSize, Color.Green, (s) => inputHandler.ChangeColor(new Color4(1, 0, 1, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0.5625f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.5625f * Width, 0.27f * Config.Height), btnSize, btnSize, Color.Blue, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 1)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0.75f * Width, 0.2f * Config.Height), colorSize, colorSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.75f * Width, 0.27f * Config.Height), btnSize, btnSize, Color.Black, (s) => inputHandler.ChangeColor(new Color4(1, 0, 0, 0)), SideBarState.RightTab));
       GotInputClick += rightTab.Last().HandleInput;
 
-      rightTab.Add(new Rectangle2D(new Vector2(0.1875f * Width, 0.28f * Config.Height), (int)(0.32f * Width), (int)(colorSize / 1.0f), Color.Black, (s) => MakeScreenshot(), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.1875f * Width, 0.18f * Config.Height), btnSize, btnSize, Color.White, (s) => MakeScreenshot(), SideBarState.RightTab, null, screenshotTex));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0.5625f * Width, 0.28f * Config.Height), (int)(0.32f * Width), (int)(colorSize / 1.0f), Color.Black, (s) => LoadFile(), SideBarState.RightTab));
+      rightTab.Add(new Rectangle2D(new Vector2(0.375f * Width, 0.18f * Config.Height), btnSize, btnSize, Color.White, (s) => LoadFile(), SideBarState.RightTab, null, fileLoadTex));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0.28f * Width, 0.28f * Config.Height), colorSize, colorSize, Color.White, screenshotTex));
+      rightTab.Add(new Rectangle2D(new Vector2(0.5625f * Width, 0.18f * Config.Height), btnSize, btnSize, Color.White, (s) => Config.LineThickness--, SideBarState.RightTab, null, minusTex));
       GotInputClick += rightTab.Last().HandleInput;
-      rightTab.Add(new Rectangle2D(new Vector2(0.655f * Width, 0.28f * Config.Height), colorSize, colorSize, Color.White, fileLoadTex));
+      rightTab.Add(new Rectangle2D(new Vector2(0.75f * Width, 0.18f * Config.Height), btnSize, btnSize, Color.White, (s) => Config.LineThickness++, SideBarState.RightTab, null, plusTex));
       GotInputClick += rightTab.Last().HandleInput;
 
       // Birth setting buttons
-      for (int i = 0; i < 9; i++)
+      for (int i = 1; i < 9; i++)
       {
-        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
+        birth.Add(new Rectangle2D(new Vector2((float)0.175 * Width, (int)(-0.011 * Config.Height)) + (24 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnBirthChanged, SideBarState.RightTab, i));
       }
       // Death setting buttons
-      for (int i = 0; i < 9; i++)
+      for (int i = 1; i < 9; i++)
       {
-        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (23 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
+        death.Add(new Rectangle2D(new Vector2((float)0.625 * Width, (int)(-0.011 * Config.Height)) + (24 + i * 3) * offset, (int)(0.25 * Width), (int)(0.046 * Config.Height), (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray, OnDeathChanged, SideBarState.RightTab, i));
       }
 
       foreach (var r in birth.Concat(death))
@@ -111,18 +123,12 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
         rightTab.Add(r);
         GotInputClick += r.HandleInput;
       }
-      var size = DrawableString.Measure("Pause");
-      rightTabStrings.Add(new DrawableString("Pause", pausebtn.Location + pausebtn.Size / 2 - size / 2, Color.White));
-      size = DrawableString.Measure("Leeren");
-      rightTabStrings.Add(new DrawableString("Leeren", clearbtn.Location + clearbtn.Size / 2 - size / 2, Color.White));
-      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.235 * Width, 0) + 20 * offset, Color.White));
-      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.705 * Width, 0) + 20 * offset, Color.White));
-      size = DrawableString.Measure("Beenden");
-      rightTabStrings.Add(new DrawableString("Beenden", closebtn.Location + closebtn.Size / 2 - size / 2, Color.White));
-      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 0.2f * Config.Height + colorSize / 2f - offset.Y), Color.White));
-      for (int i = 0; i < 9; i++)
+      rightTabStrings.Add(new DrawableString("Leben", new Vector2((float)0.235 * Width, 0) + 24 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Tod", new Vector2((float)0.705 * Width, 0) + 24 * offset, Color.White));
+      rightTabStrings.Add(new DrawableString("Farbe", new Vector2(10, 0.275f * Config.Height + btnSize / 2f - offset.Y), Color.White));
+      for (int i = 1; i < 9; i++)
       {
-        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.10 * Width, 0) + (23 + 3 * i) * offset, Color.White));
+        rightTabStrings.Add(new DrawableString(i.ToString(), new Vector2((float)0.10 * Width, 0) + (24 + 3 * i) * offset, Color.White));
       }
       rightTabStrings.Add(minimizeString);
       leftTabStrings.Add(minimizeString);
@@ -133,19 +139,28 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       rightTabStrings.Add(leftTabString);
       leftTabStrings.Add(leftTabString);
 
+      sliderbackground = new Rectangle2D(new Vector2(0.1875f * Width, (int)(0.36f * Config.Height)), (int)(0.7f * Width), (int)(0.046 * Config.Height), Color.DarkGray, s => speed = location.X, SideBarState.RightTab);
+      slider = new Rectangle2D(new Vector2(0.1875f * Width, (int)(0.36f * Config.Height)), (int)(0.02 * Width), (int)(0.046 * Config.Height), Color.White);
+      GotInputClick += sliderbackground.HandleInput;
+
+      rightTab.Add(sliderbackground);
+      rightTab.Add(slider);
+
       pm = new PatternManager(0, (int)(0.074 * Config.Height), Width, Config.Height - 2 * (int)(0.074 * Config.Height), this); //oberen und unteren button abziehen ....
+
+      speed = 0.1875f * Width * 2.5f;
     }
 
     private void OnBirthChanged(object sender)
     {
       int index = (int)((Rectangle2D)sender).Data;
       Config.BirthRule ^= (uint)(1 << index);
-      birth[index].Color = (Config.BirthRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
+      birth[index - 1].Color = (Config.BirthRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
 
       if ((Config.BirthRule & 1 << index) > 0 && (Config.DeathRule & 1 << index) > 0)
       {
         Config.DeathRule ^= (uint)(1 << index);
-        death[index].Color = Color.DimGray;
+        death[index - 1].Color = Color.DimGray;
       }
     }
 
@@ -153,17 +168,23 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     {
       int index = (int)((Rectangle2D)sender).Data;
       Config.DeathRule ^= (uint)(1 << index);
-      death[index].Color = (Config.DeathRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
+      death[index - 1].Color = (Config.DeathRule & 1 << index) > 0 ? Color.Green : Color.DimGray;
 
       if ((Config.DeathRule & 1 << index) > 0 && (Config.BirthRule & 1 << index) > 0)
       {
         Config.BirthRule ^= (uint)(1 << index);
-        birth[index].Color = Color.DimGray;
+        birth[index - 1].Color = Color.DimGray;
       }
     }
 
     public void Draw(SpriteBatch sb)
     {
+      float widthMin = 0.1875f * Width;
+      float widthMax = 0.7f * Width;
+      slider.SetPosition((int)(speed - slider.Size.X / 2f), (int)slider.Location.Y);
+      int sleepMS = (int)((speed - widthMin) / widthMax * 12);
+      Config.Delay = (1 << sleepMS) >> 1;
+
       if (State == SideBarState.Minimized)
       {
         sb.Draw(maximize);
@@ -202,15 +223,18 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
         || pm.Contains(loc);
     }
 
+    Point location = new Point();
     public bool HandleMouseMove(Point loc)
     {
+      location = loc;
       pm.HandleMouseMove(loc);
       return IsPointOnUI(loc);
     }
 
     public bool HandleMouseClick(Point loc)
     {
-      if (pm.Contains(loc))
+      location = loc;
+      if (State == SideBarState.LeftTab && pm.Contains(loc))
       {
         pm.HandleMouseClick(loc, inputHandler.SelectedColor);
         return true;

@@ -22,6 +22,8 @@ namespace GameOfLife.RenderEngine
     readonly Mesh quad;
     readonly Buffer CBuffer;
     Random rnd = new Random();
+    SamplerState samplerPoint = SamplerStates.Instance.PointSampler;
+    SamplerState samplerLin = SamplerStates.Instance.PointSampler;
 
     public GameOfLifeCalculator()
     {
@@ -72,7 +74,7 @@ namespace GameOfLife.RenderEngine
         databoxPS.Data.Write<uint>(0);
         databoxPS.Data.Write<uint>(0);
         c.UnmapSubresource(CBuffer, 0);
-        
+
         c.CopyResource(OffscreenRenderTarget.Resource, ScreenBufferShaderResource.Resource);
 
         c.VertexShader.Set(GoLVS);
@@ -109,7 +111,7 @@ namespace GameOfLife.RenderEngine
       }
       catch { }
     }
-    
+
     public void LoadTexture(Texture2D tex)
     {
       var sb = RenderFrame.Instance.spriteBatch;
