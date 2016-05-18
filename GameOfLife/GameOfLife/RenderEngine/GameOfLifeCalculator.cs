@@ -22,8 +22,6 @@ namespace GameOfLife.RenderEngine
     readonly Mesh quad;
     readonly Buffer CBuffer;
     Random rnd = new Random();
-    SamplerState samplerPoint = SamplerStates.Instance.PointSampler;
-    SamplerState samplerLin = SamplerStates.Instance.PointSampler;
 
     public GameOfLifeCalculator()
     {
