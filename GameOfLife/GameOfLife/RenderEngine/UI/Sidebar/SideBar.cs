@@ -73,7 +73,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       var minimizeString = new DrawableString("Einklappen", new Vector2((float)0.35 * Width, Config.Height - (int)(0.05 * Config.Height)), Color.White);
       maximizeString = new DrawableString(">", new Vector2((float)0.0125 * Width, Config.Height / 2f), Color.White);
 
-      int btnSize = (int)(0.04 * Config.Width);
+      int btnSize = (int)(0.15 * Width);
 
       var closebtn = new Rectangle2D(new Vector2(0.1875f * Width, 0.093f * Config.Height), btnSize, btnSize, Color.OrangeRed, (s) => RenderFrame.Instance.Exit(), SideBarState.RightTab, null, exitTex);
       rightTab.Add(closebtn);
@@ -139,16 +139,19 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       rightTabStrings.Add(leftTabString);
       leftTabStrings.Add(leftTabString);
 
-      sliderbackground = new Rectangle2D(new Vector2(0.1875f * Width, (int)(0.36f * Config.Height)), (int)(0.7f * Width), (int)(0.046 * Config.Height), Color.DarkGray, s => speed = location.X, SideBarState.RightTab);
+      sliderbackground = new Rectangle2D(new Vector2(0.1875f * Width, (int)(0.36f * Config.Height)), (int)(0.714f * Width), (int)(0.046 * Config.Height), Color.DarkGray, s => speed = location.X, SideBarState.RightTab);
       slider = new Rectangle2D(new Vector2(0.1875f * Width, (int)(0.36f * Config.Height)), (int)(0.02 * Width), (int)(0.046 * Config.Height), Color.White);
       GotInputClick += sliderbackground.HandleInput;
+
+      rightTabStrings.Add(new DrawableString("Langsam", new Vector2(sliderbackground.Location.X + 10, sliderbackground.Location.Y + sliderbackground.Size.Y / 2 - DrawableString.Measure("a", 1).Y / 2), Color.White, 1));
+      rightTabStrings.Add(new DrawableString("Schnell", new Vector2(sliderbackground.Location.X + sliderbackground.Size.X - 10 - DrawableString.Measure("Schnell", 1).X, sliderbackground.Location.Y + sliderbackground.Size.Y / 2 - DrawableString.Measure("a", 1).Y / 2), Color.White, 1));
 
       rightTab.Add(sliderbackground);
       rightTab.Add(slider);
 
       pm = new PatternManager(0, (int)(0.074 * Config.Height), Width, Config.Height - 2 * (int)(0.074 * Config.Height), this); //oberen und unteren button abziehen ....
 
-      speed = 0.1875f * Width * 2.5f;
+      speed = 0.1875f * Width * 3f;
     }
 
     private void OnBirthChanged(object sender)
@@ -182,7 +185,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       float widthMin = 0.1875f * Width;
       float widthMax = 0.7f * Width;
       slider.SetPosition((int)(speed - slider.Size.X / 2f), (int)slider.Location.Y);
-      int sleepMS = (int)((speed - widthMin) / widthMax * 12);
+      int sleepMS = (int)((1 - (speed - widthMin) / widthMax) * 12);
       Config.Delay = (1 << sleepMS) >> 1;
 
       if (State == SideBarState.Minimized)
