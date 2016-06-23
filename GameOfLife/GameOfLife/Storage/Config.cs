@@ -77,6 +77,7 @@ namespace GameOfLife.Storage
       {
         BirthRule |= (uint)(1 << int.Parse(c.ToString()));
       }
+      RulesChanged?.Invoke();
     }
 
     public static string GetRuleAsString()

@@ -20,7 +20,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     int PatternMarginY = 50;
     int Page = 0;
     string currentRules;
-    List<Rectangle2D> patternToPlace = new List<Rectangle2D>();
+    List<Pattern> patternToPlace = new List<Pattern>();
     List<Rectangle2D> patternToDraw = new List<Rectangle2D>();
 
     public PatternManager(int x, int y, int width, int heigth, SideBar sb)
@@ -65,7 +65,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     private void UpdatePatterns(int pageDiff = 0)
     {
-      var possiblePatterns = patterns.FindAll(s => s.World == currentRules);
+      var possiblePatterns = patterns; //.FindAll(s => s.World == currentRules);
 
       Page += pageDiff;
       Page = Page < 0 ? 0 : Page > (int)(possiblePatterns.Count / 8f) ? (int)(possiblePatterns.Count / 8f) : Page;
@@ -88,7 +88,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public void Draw(SpriteBatch sb)
     {
       foreach (var p in currentPatterns) p.Draw(sb);
-      foreach (var p in patternToPlace) sb.Draw(p);
+      foreach (var p in patternToPlace) sb.Draw(p.rect);
 
       sb.Draw(left);
       sb.Draw(right);
@@ -109,7 +109,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
 
     public bool Contains(Point loc)
     {
-      foreach (var p in patternToPlace) if (p.BoundingBox.Contains(loc)) return true;
+      foreach (var p in patternToPlace) if (p.rect.BoundingBox.Contains(loc)) return true;
       return false;
     }
 
@@ -121,9 +121,9 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       oldmouseLoc = loc;
       foreach (var p in patternToPlace)
       {
-        if (p.BoundingBox.Contains(old))
+        if (p.rect.BoundingBox.Contains(old))
         {
-          p.SetPosition((int)p.Location.X + loc.X - old.X, (int)p.Location.Y + loc.Y - old.Y);
+          p.rect.SetPosition((int)p.rect.Location.X + loc.X - old.X, (int)p.rect.Location.Y + loc.Y - old.Y);
           return;
         }
       }
@@ -131,7 +131,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       {
         if (p.rect.BoundingBox.Contains(old))
         {
-          patternToPlace.Add(new Rectangle2D(loc.X, loc.Y, p.Texture.Description.Width, p.Texture.Description.Height, p.Texture));
+          patternToPlace.Add(new Pattern(new Vector2(loc.X, loc.Y), p.Texture.Description.Width, p.Texture.Description.Height, p.Path,p.World,p.Name));
         }
       }
     }
@@ -147,14 +147,15 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       if (loc != startMouseLoc) return;
       foreach (var p in patternToPlace)
       {
-        if (p.BoundingBox.Contains(loc))
+        if (p.rect.BoundingBox.Contains(loc))
         {
           var sb = RenderFrame.Instance.spriteBatch;
           var rt = RenderFrame.Instance.gol.OffscreenRenderTarget;
-          p.Color = col;
+          p.rect.Color = col;
+          Config.SetRuleFromString(p.World);
 
           sb.Begin(rt);
-          sb.Draw(p);
+          sb.Draw(p.rect);
           sb.End();
 
           patternToPlace.Remove(p);

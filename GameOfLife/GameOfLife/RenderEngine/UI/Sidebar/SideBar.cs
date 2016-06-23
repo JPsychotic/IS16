@@ -152,6 +152,17 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
       pm = new PatternManager(0, (int)(0.074 * Config.Height), Width, Config.Height - 2 * (int)(0.074 * Config.Height), this); //oberen und unteren button abziehen ....
 
       speed = 0.1875f * Width * 3f;
+
+      Config.RulesChanged += Config_RulesChanged;
+    }
+
+    private void Config_RulesChanged()
+    {
+      for (int i = 1; i < 9; i++)
+      {
+        birth[i-1].Color = (Config.BirthRule & 1 << i) > 0 ? Color.Green : Color.DimGray;
+        death[i-1].Color = (Config.DeathRule & 1 << i) > 0 ? Color.Green : Color.DimGray;
+      }
     }
 
     private void OnBirthChanged(object sender)
@@ -230,7 +241,7 @@ namespace GameOfLife.RenderEngine.UI.Sidebar
     public bool HandleMouseMove(Point loc)
     {
       location = loc;
-      pm.HandleMouseMove(loc);
+      if(State == SideBarState.LeftTab) pm.HandleMouseMove(loc);
       return IsPointOnUI(loc);
     }
 
